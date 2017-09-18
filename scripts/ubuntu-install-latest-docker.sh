@@ -1,3 +1,7 @@
+#!/usr/bin/env bash
+
+# https://gist.github.com/wdullaer/f1af16bd7e970389bad3
+
 # Ask for the user password
 # Script only works if sudo caches the password for a few minutes
 sudo true
@@ -26,3 +30,7 @@ git clone https://gist.github.com/76b450a0c986e576e98b.git
 cd 76b450a0c986e576e98b
 sudo mv docker-cleanup /usr/local/bin/docker-cleanup
 sudo chmod +x /usr/local/bin/docker-cleanup
+
+# Add docker to USER to allow non-sudo docker-compose up
+sudo groupadd docker
+sudo gpasswd -a $USER docker
