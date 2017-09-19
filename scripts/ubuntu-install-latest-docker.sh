@@ -35,4 +35,5 @@ sudo chmod +x /usr/local/bin/docker-cleanup
 sudo groupadd docker
 sudo gpasswd -a $USER docker
 
+# Install Python reqs
 sudo apt install python3 && pip3 install django pep8
