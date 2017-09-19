@@ -10,7 +10,8 @@ Group Expense Sharing App
 ```Bash
 make install
 ```
-Install docker: https://www.docker.com/get-docker
+
+Or try to manually install docker: https://www.docker.com/get-docker
 
 ## Starting Docker
 
