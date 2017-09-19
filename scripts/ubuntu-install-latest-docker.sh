@@ -34,3 +34,5 @@ sudo chmod +x /usr/local/bin/docker-cleanup
 # Add docker to USER to allow non-sudo docker-compose up
 sudo groupadd docker
 sudo gpasswd -a $USER docker
+
+sudo apt install python3 && pip3 install django pep8

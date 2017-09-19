@@ -6,15 +6,22 @@ else
     # OS X Dependant Variables
     ifeq ($(UNAME_S), Darwin)
 
-    INSTALL_COMMAND := sh macos-install-latest-docker.sh
+    INSTALL_COMMAND := sh scripts/macos-install-latest-docker.sh
 
     # GNU/Linux Depedant Variables
     else ifeq ($(UNAME_S), Linux)
 
-    INSTALL_COMMAND := sh ubuntu-install-latest-docker.sh
+    INSTALL_COMMAND := sh scripts/ubuntu-install-latest-docker.sh
 
     endif
 endif
+
+# Make Manage
+ifeq (manage,$(firstword $(MAKECMDGOALS)))
+  MANAGE_ARGS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
+  $(eval $(MANAGE_ARGS):;@:)
+endif
+
 
 .PHONY: all install up start stop build migrate
 
@@ -37,5 +44,5 @@ stop:
 build:
 	docker-compose build
 
-migrate:
-	docker-compose exec web python manage.py migrate
+manage:
+	docker-compose exec web python manage.py $(MANAGE_ARGS)
