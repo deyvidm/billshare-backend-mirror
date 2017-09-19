@@ -6,6 +6,13 @@
 # Script only works if sudo caches the password for a few minutes
 sudo true
 
+# Add docker to USER to allow non-sudo docker-compose up
+sudo groupadd docker
+sudo gpasswd -a $USER docker
+
+# Install Python reqs
+sudo apt install python3 && pip3 install django pep8
+
 # Install kernel extra's to enable docker aufs support
 # sudo apt-get -y install linux-image-extra-$(uname -r)
 
@@ -30,10 +37,3 @@ git clone https://gist.github.com/76b450a0c986e576e98b.git
 cd 76b450a0c986e576e98b
 sudo mv docker-cleanup /usr/local/bin/docker-cleanup
 sudo chmod +x /usr/local/bin/docker-cleanup
-
-# Add docker to USER to allow non-sudo docker-compose up
-sudo groupadd docker
-sudo gpasswd -a $USER docker
-
-# Install Python reqs
-sudo apt install python3 && pip3 install django pep8

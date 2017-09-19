@@ -7,6 +7,7 @@ else
     ifeq ($(UNAME_S), Darwin)
 
     INSTALL_COMMAND := sh scripts/macos-install-latest-docker.sh
+    UP_COMMAND := open -a Docker
 
     # GNU/Linux Depedant Variables
     else ifeq ($(UNAME_S), Linux)
@@ -33,6 +34,7 @@ install: hooks
 	$(INSTALL_COMMAND)
 
 up:
+	$(UP_COMMAND)
 	docker-compose up
 
 start:
