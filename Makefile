@@ -23,13 +23,13 @@ ifeq (manage,$(firstword $(MAKECMDGOALS)))
 endif
 
 
-.PHONY: all install up start stop build migrate
+.PHONY: all install up start stop build manage hooks
 
 all:
 	@echo Targets:
 	@make -qp | awk -F':' '/^[a-zA-Z0-9][^$$#\/\t=]*:([^=]|$$)/ {split($$1,A,/ /);for(i in A)print "    "A[i]}' | grep -v Makefile | sort
 
-install:
+install: hooks
 	$(INSTALL_COMMAND)
 
 up:
@@ -46,3 +46,6 @@ build:
 
 manage:
 	docker-compose exec web python manage.py $(MANAGE_ARGS)
+
+hooks:
+	cp hooks/* .git/hooks/
