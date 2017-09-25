@@ -1,6 +1,6 @@
-# Zero-Point-Module
+# Bill Share Django Backend
 
-Group Expense Sharing App
+Group expense sharing app - [billshare.io](https://billshare.io/) django backend
 
 ## Installation
 
