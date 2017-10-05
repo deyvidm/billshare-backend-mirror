@@ -17,12 +17,11 @@ else
     endif
 endif
 
-# Make Manage
-ifeq (manage,$(firstword $(MAKECMDGOALS)))
-  MANAGE_ARGS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
-  $(eval $(MANAGE_ARGS):;@:)
-endif
+DOCKER_NAME := billshare
 
+# Make Manage
+MANAGE_ARGS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
+  $(eval $(MANAGE_ARGS):;@:)
 
 .PHONY: all install up start stop build manage hooks
 
@@ -47,7 +46,23 @@ build:
 	docker-compose build
 
 manage:
-	docker-compose exec web python manage.py $(MANAGE_ARGS)
+	docker-compose exec app python manage.py $(MANAGE_ARGS)
 
 hooks:
 	cp hooks/* .git/hooks/
+
+.PHONY: prod-connect prod-create prod-ssh prod-disconnect
+
+prod-connect:
+	docker-machine env $(DOCKER_NAME)
+	eval $$(docker-machine env $(DOCKER_NAME))
+
+prod-disconnect:
+	eval $$(docker-machine env -u)
+
+prod-create:
+	docker-machine create --driver=digitalocean --digitalocean-access-token=$(MANAGE_ARGS) --digitalocean-size=512mb --digitalocean-region=NYC1 $(DOCKER_NAME)
+
+prod-ssh:
+	docker-machine ssh $(DOCKER_NAME)
+# --digitalocean-ipv6=true

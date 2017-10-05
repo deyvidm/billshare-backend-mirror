@@ -31,6 +31,11 @@ sudo sh -c "curl -L https://github.com/docker/compose/releases/download/${COMPOS
 sudo chmod +x /usr/local/bin/docker-compose
 sudo sh -c "curl -L https://raw.githubusercontent.com/docker/compose/${COMPOSE_VERSION}/contrib/completion/bash/docker-compose > /etc/bash_completion.d/docker-compose"
 
+# Install docker-machine
+curl -L https://github.com/docker/machine/releases/download/v0.12.2/docker-machine-`uname -s`-`uname -m` >/tmp/docker-machine &&
+chmod +x /tmp/docker-machine &&
+sudo cp /tmp/docker-machine /usr/local/bin/docker-machine
+
 # Install docker-cleanup command
 cd /tmp
 git clone https://gist.github.com/76b450a0c986e576e98b.git
