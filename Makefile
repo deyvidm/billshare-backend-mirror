@@ -51,7 +51,18 @@ manage:
 hooks:
 	cp hooks/* .git/hooks/
 
-.PHONY: prod-connect prod-create prod-ssh prod-disconnect
+.PHONY: prod-connect prod-create prod-ssh prod-disconnect prod-deploy prod-stop prod-build prod-start
+
+prod-deploy: prod-stop prod-build prod-start
+
+prod-start:
+	docker-compose -f docker-compose.prod.yml start
+
+prod-build:
+	docker-compose -f docker-compose.prod.yml build
+
+prod-stop:
+	docker-compose -f docker-compose.prod.yml stop
 
 prod-connect:
 	docker-machine env $(DOCKER_NAME)
@@ -62,7 +73,10 @@ prod-disconnect:
 
 prod-create:
 	docker-machine create --driver=digitalocean --digitalocean-access-token=$(MANAGE_ARGS) --digitalocean-size=512mb --digitalocean-region=NYC1 $(DOCKER_NAME)
+# --digitalocean-ipv6=true
+
+prod-destroy:
+	docker-machine rm $(DOCKER_NAME)
 
 prod-ssh:
 	docker-machine ssh $(DOCKER_NAME)
-# --digitalocean-ipv6=true

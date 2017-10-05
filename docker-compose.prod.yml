@@ -14,12 +14,7 @@ services:
 #      - app
   app:
     build: .
-    command: python3 manage.py runserver 0.0.0.0:80
-    volumes:
-      - .:/app
     ports:
-      - "80:80"
-#    expose:
-#      - "8000"
+      - "3000:3000"
     depends_on:
       - db
