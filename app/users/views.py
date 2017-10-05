@@ -8,8 +8,8 @@ class Users(View):
 
     def get(self, request):
         data = {
-                'success': True,
-                'data': 'this is some test data'
-                }
+            'success': True,
+            'data': 'this is some test data'
+        }
 
         return JsonResponse(data)
