@@ -26,7 +26,9 @@ SECRET_KEY = '0ifr165*6x^ki82x_ol=y&09mj_jb@$2*bmhzhiwnmt6bnh7eq'
 DEBUG = True
 
 ALLOWED_HOSTS = [
+    '0.0.0.0',
     '0.0.0.0:3000',
+    'billshare.io',
     'billshare.io:3000',
 ]
 

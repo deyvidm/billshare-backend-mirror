@@ -13,6 +13,7 @@ services:
 #    depends_on:
 #      - app
   app:
+    restart: always
     build: .
     ports:
       - "3000:3000"
