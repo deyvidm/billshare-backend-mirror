@@ -5,10 +5,9 @@ services:
     image: postgres
   app:
     build: .
-    command: python3 manage.py runserver 0.0.0.0:8000
     volumes:
       - .:/app
     ports:
-      - "8000:8000"
+      - "3000:3000"
     depends_on:
       - db
