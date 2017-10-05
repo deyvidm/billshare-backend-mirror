@@ -3,15 +3,6 @@ version: "3"
 services:
   db:
     image: postgres
-#  nginx:
-#    image: nginx:latest
-#    ports:
-#      - "8000:8000"
-#    volumes:
-#      - .:/app
-#      - ./config/nginx:/etc/nginx/conf.d
-#    depends_on:
-#      - app
   app:
     restart: always
     build: .
