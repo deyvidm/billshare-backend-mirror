@@ -4,6 +4,7 @@ services:
   db:
     image: postgres
   app:
+    restart: always
     build: .
     volumes:
       - .:/app
