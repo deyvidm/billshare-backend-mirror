@@ -51,7 +51,7 @@ manage:
 hooks:
 	cp hooks/* .git/hooks/
 
-.PHONY: prod-connect prod-create prod-ssh prod-disconnect prod-deploy prod-stop prod-build prod-start prod-up prod-create-digital-ocean
+.PHONY: prod-connect prod-create prod-ssh prod-disconnect prod-deploy prod-stop prod-build prod-start prod-up prod-create-digital-ocean prod-recreate
 
 prod-deploy: prod-stop prod-build prod-up prod-start
 
@@ -60,6 +60,9 @@ prod-start:
 
 prod-build:
 	docker-compose -f docker-compose.prod.yml build
+
+prod-recreate:
+	docker-compose -f docker-compose.prod.yml provision
 
 prod-up:
 	docker-compose -f docker-compose.prod.yml up -d
