@@ -8,3 +8,4 @@ docker-compose.prod.yml
 scripts
 hooks
 __pycache__
+*.zip

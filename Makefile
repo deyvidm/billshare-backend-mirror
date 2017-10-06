@@ -23,7 +23,7 @@ DOCKER_NAME := billshare
 MANAGE_ARGS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
   $(eval $(MANAGE_ARGS):;@:)
 
-.PHONY: all install up start stop build manage hooks
+.PHONY: all install up start stop build manage hooks machine-export machine-import
 
 all:
 	@echo Targets:
@@ -50,6 +50,12 @@ manage:
 
 hooks:
 	cp hooks/* .git/hooks/
+
+machine-import:
+	machine-import $(DOCKER_NAME).zip
+
+machine-export:
+	machine-export $(DOCKER_NAME)
 
 .PHONY: prod-connect prod-create prod-ssh prod-disconnect prod-deploy prod-stop prod-build prod-start prod-up prod-create-digital-ocean prod-recreate
 
