@@ -49,9 +49,9 @@ make manage <command1> <command2> ...
 
 ### Getting Setup
 
-1. Get <machine-name>.zip from DevOps (using `machine-share`)
+1. Get \<machine-name\>.zip from DevOps (using `machine-share`)
 
-2. Import <machine-name> using `machine-share`
+2. Import \<machine-name\> using `machine-share`
 
 ```Bash
 npm install -g machine-share
@@ -60,7 +60,7 @@ make machine-import
 
 ### Connecting to Production
 
-* Set local environment to <machine-name>
+* Set local environment to \<machine-name\>
 
 ```Bash
 # Copy the last command and run it in your current shell
