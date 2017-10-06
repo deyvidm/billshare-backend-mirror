@@ -4,7 +4,7 @@ Group expense sharing app - [billshare.io](https://billshare.io/) django backend
 
 ## Installation
 
-1. Docker, docker-compose
+1. Docker, docker-compose, docker-machine
 2. Python3, Django, PEP8
 
 ```Bash
