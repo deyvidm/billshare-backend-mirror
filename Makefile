@@ -18,6 +18,10 @@ else
 endif
 
 DOCKER_NAME := billshare
+DOCKER_COMPOSE_PRODUCTION_YAML := docker-compose.prod.yml
+
+DOCKER_COMPOSE_COMMAND := docker-compose
+DOCKER_MACHINE_COMMAND := docker-machine
 
 # Make Manage
 MANAGE_ARGS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
@@ -34,19 +38,19 @@ install: hooks
 
 up:
 	$(UP_COMMAND)
-	docker-compose up
+	$(DOCKER_COMPOSE_COMMAND) up
 
 start:
-	docker-compose start
+	$(DOCKER_COMPOSE_COMMAND) start
 
 stop:
-	docker-compose stop
+	$(DOCKER_COMPOSE_COMMAND) stop
 
 build:
-	docker-compose build
+	$(DOCKER_COMPOSE_COMMAND) build
 
 manage:
-	docker-compose exec app python manage.py $(MANAGE_ARGS)
+	$(DOCKER_COMPOSE_COMMAND) exec app python manage.py $(MANAGE_ARGS)
 
 hooks:
 	cp hooks/* .git/hooks/
@@ -62,35 +66,35 @@ machine-export:
 prod-deploy: prod-stop prod-build prod-up prod-start
 
 prod-start:
-	docker-compose -f docker-compose.prod.yml start
+	$(DOCKER_COMPOSE_COMMAND) -f $(DOCKER_COMPOSE_PRODUCTION_YAML) start
 
 prod-build:
-	docker-compose -f docker-compose.prod.yml build
+	$(DOCKER_COMPOSE_COMMAND) -f $(DOCKER_COMPOSE_PRODUCTION_YAML) build
 
 prod-recreate:
-	docker-compose -f docker-compose.prod.yml provision
+	$(DOCKER_COMPOSE_COMMAND) -f $(DOCKER_COMPOSE_PRODUCTION_YAML) provision
 
 prod-up:
-	docker-compose -f docker-compose.prod.yml up -d
+	$(DOCKER_COMPOSE_COMMAND) -f $(DOCKER_COMPOSE_PRODUCTION_YAML) up -d
 
 prod-stop:
-	docker-compose -f docker-compose.prod.yml stop
+	$(DOCKER_COMPOSE_COMMAND) -f $(DOCKER_COMPOSE_PRODUCTION_YAML) stop
 
 prod-connect:
-	docker-machine env $(DOCKER_NAME)
-	eval $$(docker-machine env $(DOCKER_NAME))
+	$(DOCKER_MACHINE_COMMAND) env $(DOCKER_NAME)
+	eval $$($(DOCKER_MACHINE_COMMAND) env $(DOCKER_NAME))
 
 prod-disconnect:
-	eval $$(docker-machine env -u)
+	eval $$($(DOCKER_MACHINE_COMMAND) env -u)
 
 prod-create: prod-create-digital-ocean prod-up
 
 prod-create-digital-ocean:
-	docker-machine create --driver=digitalocean --digitalocean-access-token=$(MANAGE_ARGS) --digitalocean-size=512mb --digitalocean-region=tor1 $(DOCKER_NAME)
+	$(DOCKER_MACHINE_COMMAND) create --driver=digitalocean --digitalocean-access-token=$(MANAGE_ARGS) --digitalocean-size=512mb --digitalocean-region=tor1 $(DOCKER_NAME)
 # --digitalocean-ipv6=true
 
 prod-destroy:
-	docker-machine rm $(DOCKER_NAME)
+	$(DOCKER_MACHINE_COMMAND) rm $(DOCKER_NAME)
 
 prod-ssh:
-	docker-machine ssh $(DOCKER_NAME)
+	$(DOCKER_MACHINE_COMMAND) ssh $(DOCKER_NAME)
