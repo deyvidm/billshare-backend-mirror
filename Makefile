@@ -17,14 +17,17 @@ else
     endif
 endif
 
+DOCKER_NAME := billshare
+DOCKER_COMPOSE_PRODUCTION_YAML := docker-compose.prod.yml
+
+DOCKER_COMPOSE_COMMAND := docker-compose
+DOCKER_MACHINE_COMMAND := docker-machine
+
 # Make Manage
-ifeq (manage,$(firstword $(MAKECMDGOALS)))
-  MANAGE_ARGS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
+MANAGE_ARGS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
   $(eval $(MANAGE_ARGS):;@:)
-endif
 
-
-.PHONY: all install up start stop build manage hooks
+.PHONY: all install up start stop build manage hooks machine-export machine-import
 
 all:
 	@echo Targets:
@@ -35,19 +38,63 @@ install: hooks
 
 up:
 	$(UP_COMMAND)
-	docker-compose up
+	$(DOCKER_COMPOSE_COMMAND) up
 
 start:
-	docker-compose start
+	$(DOCKER_COMPOSE_COMMAND) start
 
 stop:
-	docker-compose stop
+	$(DOCKER_COMPOSE_COMMAND) stop
 
 build:
-	docker-compose build
+	$(DOCKER_COMPOSE_COMMAND) build
 
 manage:
-	docker-compose exec web python manage.py $(MANAGE_ARGS)
+	$(DOCKER_COMPOSE_COMMAND) exec app python manage.py $(MANAGE_ARGS)
 
 hooks:
 	cp hooks/* .git/hooks/
+
+machine-import:
+	machine-import $(DOCKER_NAME).zip
+
+machine-export:
+	machine-export $(DOCKER_NAME)
+
+.PHONY: prod-connect prod-create prod-ssh prod-disconnect prod-deploy prod-stop prod-build prod-start prod-up prod-create-digital-ocean prod-recreate
+
+prod-deploy: prod-stop prod-build prod-up prod-start
+
+prod-start:
+	$(DOCKER_COMPOSE_COMMAND) -f $(DOCKER_COMPOSE_PRODUCTION_YAML) start
+
+prod-build:
+	$(DOCKER_COMPOSE_COMMAND) -f $(DOCKER_COMPOSE_PRODUCTION_YAML) build
+
+prod-recreate:
+	$(DOCKER_COMPOSE_COMMAND) -f $(DOCKER_COMPOSE_PRODUCTION_YAML) provision
+
+prod-up:
+	$(DOCKER_COMPOSE_COMMAND) -f $(DOCKER_COMPOSE_PRODUCTION_YAML) up -d
+
+prod-stop:
+	$(DOCKER_COMPOSE_COMMAND) -f $(DOCKER_COMPOSE_PRODUCTION_YAML) stop
+
+prod-connect:
+	$(DOCKER_MACHINE_COMMAND) env $(DOCKER_NAME)
+	eval $$($(DOCKER_MACHINE_COMMAND) env $(DOCKER_NAME))
+
+prod-disconnect:
+	eval $$($(DOCKER_MACHINE_COMMAND) env -u)
+
+prod-create: prod-create-digital-ocean prod-up
+
+prod-create-digital-ocean:
+	$(DOCKER_MACHINE_COMMAND) create --driver=digitalocean --digitalocean-access-token=$(MANAGE_ARGS) --digitalocean-size=512mb --digitalocean-region=tor1 $(DOCKER_NAME)
+# --digitalocean-ipv6=true
+
+prod-destroy:
+	$(DOCKER_MACHINE_COMMAND) rm $(DOCKER_NAME)
+
+prod-ssh:
+	$(DOCKER_MACHINE_COMMAND) ssh $(DOCKER_NAME)

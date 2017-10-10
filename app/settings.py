@@ -25,13 +25,17 @@ SECRET_KEY = '0ifr165*6x^ki82x_ol=y&09mj_jb@$2*bmhzhiwnmt6bnh7eq'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['0.0.0.0']
+ALLOWED_HOSTS = [
+    '0.0.0.0',
+    '0.0.0.0:3000',
+    'billshare.io',
+    'billshare.io:3000',
+]
 
 
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
