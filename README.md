@@ -43,6 +43,9 @@ make stop
 make manage <command1> <command2> ...
 
 # make manage migrate
+# make manage makemigrations
+# make manage dbshell
+# make manage shell
 ```
 
 ## Production Access
