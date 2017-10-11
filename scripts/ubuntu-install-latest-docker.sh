@@ -44,5 +44,5 @@ sudo cp /tmp/docker-machine /usr/local/bin/docker-machine
 #sudo mv docker-cleanup /usr/local/bin/docker-cleanup
 #sudo chmod +x /usr/local/bin/docker-cleanup
 
-sudo mv ubuntu-docker-cleanup.sh /usr/local/bin/docker-cleanup
+sudo mv scripts/ubuntu-docker-cleanup.sh /usr/local/bin/docker-cleanup
 sudo chmod +x /usr/local/bin/docker-cleanup
