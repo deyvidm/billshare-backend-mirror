@@ -114,6 +114,13 @@ make prod-destroy
 
 ```Bash
 # docker-compose build
+make prod-manage <command1> <command2> ...
+
+# make prod-manage migrate
+# make prod-manage dbshell
+# make prod-manage shell
+
+# docker-compose build
 make prod-build
 
 # docker-compose start

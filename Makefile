@@ -42,7 +42,6 @@ install: hooks
 ssh:
 	$(DOCKER_COMMAND) exec -it $(LOCAL_CONTAINER_NAME) /bin/bash
 
-
 up:
 	$(UP_COMMAND)
 	$(DOCKER_COMPOSE_COMMAND) up
@@ -68,7 +67,7 @@ machine-import:
 machine-export:
 	machine-export $(DOCKER_NAME)
 
-.PHONY: prod-connect prod-create prod-ssh prod-disconnect prod-deploy prod-stop prod-build prod-start prod-up prod-create-digital-ocean prod-recreate
+.PHONY: prod-connect prod-create prod-ssh prod-disconnect prod-deploy prod-stop prod-build prod-start prod-up prod-create-digital-ocean prod-recreate prod-manage
 
 prod-deploy: prod-build prod-up prod-start
 
@@ -93,6 +92,9 @@ prod-connect:
 
 prod-disconnect:
 	eval $$($(DOCKER_MACHINE_COMMAND) env -u)
+
+prod-manage:
+	$(DOCKER_COMPOSE_COMMAND) -f $(DOCKER_COMPOSE_PRODUCTION_YAML) exec app python manage.py $(MANAGE_ARGS)
 
 prod-create: prod-create-digital-ocean prod-up
 
