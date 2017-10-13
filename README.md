@@ -19,12 +19,15 @@ Or try to manually install docker: https://www.docker.com/get-docker
 make up
 ```
 
-> Check `0.0.0.0:3000` to see if server is up and running
+> Check `127.0.0.1:3000` to see if server is up and running
 
 ## Basic Docker Commands
 
 ```Bash
-# Run docker-compose build
+# SSH into the local container
+make ssh
+
+# Run docker-compose build, rebuilds when you make docker-level changes
 make build
 
 # Copy git hooks to .git
@@ -47,6 +50,16 @@ make manage <command1> <command2> ...
 # make manage dbshell
 # make manage shell
 ```
+
+### Check Django Security
+
+> Connect to production to run against prod settings
+
+```Bash
+make manage check '\-\-deploy'
+```
+
+> https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
 ## Production Access
 

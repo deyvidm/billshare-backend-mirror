@@ -10,28 +10,36 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
-import os
+from os import (
+    environ,
+    getenv,
+    path,
+)
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
+BASE_DIR = path.dirname(path.dirname(path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '0ifr165*6x^ki82x_ol=y&09mj_jb@$2*bmhzhiwnmt6bnh7eq'
+SECRET_KEY = environ['DJANGO_SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+if getenv('DJANGO_ENV') == 'prod':
+    DEBUG = False
+elif getenv('DJANGO_ENV') == 'dev':
+    DEBUG = True
 
-ALLOWED_HOSTS = [
-    '0.0.0.0',
-    '0.0.0.0:3000',
-    'billshare.io',
-    'billshare.io:3000',
-]
-
+if getenv('DJANGO_ENV') == 'prod':
+    ALLOWED_HOSTS = [
+        'billshare.io',
+        'billshare.io:3000',
+    ]
+elif getenv('DJANGO_ENV') == 'dev':
+    ALLOWED_HOSTS = [
+        'localhost',
+        'localhost:3000',
+        '127.0.0.1',
+        '127.0.0.1:3000',
+    ]
 
 # Application definition
 
@@ -40,7 +48,6 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles',
 ]
 
 MIDDLEWARE = [
@@ -51,6 +58,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
 ]
 
 ROOT_URLCONF = 'app.urls'
@@ -80,10 +88,11 @@ WSGI_APPLICATION = 'app.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
-        'USER': 'postgres',
-        'HOST': 'db',
-        'PORT': 5432,
+        'NAME': environ['DATABASE_NAME'],
+        'USER': environ['DATABASE_USER'],
+        'PASSWORD': environ['DATABASE_PASSWORD'],
+        'HOST': environ['DATABASE_HOST'],
+        'PORT': environ['DATABASE_PORT'],
     }
 }
 
@@ -120,8 +129,14 @@ USE_L10N = True
 
 USE_TZ = True
 
+# Custom Settings
+SECURE_CONTENT_TYPE_NOSNIFF = True
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/1.11/howto/static-files/
+SECURE_BROWSER_XSS_FILTER = True
 
-STATIC_URL = '/static/'
+X_FRAME_OPTIONS = 'DENY'
+
+# SSL Settings
+SESSION_COOKIE_SECURE = False
+SECURE_HSTS_SECONDS = False
+SECURE_SSL_REDIRECT = False

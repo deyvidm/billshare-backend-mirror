@@ -23,11 +23,14 @@ DOCKER_COMPOSE_PRODUCTION_YAML := docker-compose.prod.yml
 DOCKER_COMPOSE_COMMAND := docker-compose
 DOCKER_MACHINE_COMMAND := docker-machine
 
+DOCKER_COMMAND := docker
+LOCAL_CONTAINER_NAME := billsharebackend_app_1
+
 # Make Manage
 MANAGE_ARGS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
   $(eval $(MANAGE_ARGS):;@:)
 
-.PHONY: all install up start stop build manage hooks machine-export machine-import
+.PHONY: all install up start stop ssh build manage hooks machine-export machine-import
 
 all:
 	@echo Targets:
@@ -35,6 +38,10 @@ all:
 
 install: hooks
 	$(INSTALL_COMMAND)
+
+ssh:
+	$(DOCKER_COMMAND) exec -it $(LOCAL_CONTAINER_NAME) /bin/bash
+
 
 up:
 	$(UP_COMMAND)
@@ -63,7 +70,7 @@ machine-export:
 
 .PHONY: prod-connect prod-create prod-ssh prod-disconnect prod-deploy prod-stop prod-build prod-start prod-up prod-create-digital-ocean prod-recreate
 
-prod-deploy: prod-stop prod-build prod-up prod-start
+prod-deploy: prod-build prod-up prod-start
 
 prod-start:
 	$(DOCKER_COMPOSE_COMMAND) -f $(DOCKER_COMPOSE_PRODUCTION_YAML) start
