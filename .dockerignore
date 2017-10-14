@@ -9,3 +9,4 @@ scripts
 hooks
 __pycache__
 *.zip
+env/
