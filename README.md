@@ -48,6 +48,12 @@ make manage <command1> <command2> ...
 # make manage shell
 ```
 
+## Creating Apps
+
+```Bash
+make startapp <app-name>
+```
+
 ## Production Access
 
 ### Getting Setup
