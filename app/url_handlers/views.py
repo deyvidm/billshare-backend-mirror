@@ -1,19 +1,22 @@
 from django.http import JsonResponse
 
 
-class UrlHandlers():
+def handler403(request):
+    return JsonResponse(
+        {},
+        status=404,
+    )
 
-    def handler403(self, request):
-        return JsonResponse({
-            'status_code': 404,
-        })
 
-    def handler404(self, request):
-        return JsonResponse({
-            'status_code': 404,
-        })
+def handler404(request):
+    return JsonResponse(
+        {},
+        status=404,
+    )
 
-    def handler500(self, request):
-        return JsonResponse({
-            'status_code': 500,
-        })
+
+def handler500(request):
+    return JsonResponse(
+        {},
+        status=500,
+    )
