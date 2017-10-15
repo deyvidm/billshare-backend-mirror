@@ -5,8 +5,11 @@ services:
     image: postgres
   app:
     restart: always
+    env_file:
+      - env/prod.env
     build: .
     ports:
       - "3000:3000"
     depends_on:
       - db
+    command: ["python3", "manage.py", "runserver", "0.0.0.0:3000"]
