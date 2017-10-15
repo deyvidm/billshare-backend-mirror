@@ -2,6 +2,7 @@
 ifeq ($(OS),Windows_NT)
 else
     UNAME_S := $(shell uname -s)
+    UID := $(shell id -u $$(whoami))
 
     # OS X Dependant Variables
     ifeq ($(UNAME_S), Darwin)
@@ -17,6 +18,11 @@ else
     endif
 endif
 
+DJANGO_PROJECT_NAME := app
+
+DJANGO_DOCKER_CONTAINER_NAME := app
+DATABASE_DOCKER_CONTAINER_NAME := db
+
 DOCKER_NAME := billshare
 DOCKER_COMPOSE_PRODUCTION_YAML := docker-compose.prod.yml
 
@@ -30,7 +36,7 @@ LOCAL_CONTAINER_NAME := billsharebackend_app_1
 MANAGE_ARGS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
   $(eval $(MANAGE_ARGS):;@:)
 
-.PHONY: all install up start stop ssh build manage hooks machine-export machine-import
+.PHONY: all install up start stop ssh build manage hooks machine-export machine-import startapp
 
 all:
 	@echo Targets:
@@ -56,7 +62,11 @@ build:
 	$(DOCKER_COMPOSE_COMMAND) build
 
 manage:
-	$(DOCKER_COMPOSE_COMMAND) exec app python manage.py $(MANAGE_ARGS)
+	$(DOCKER_COMPOSE_COMMAND) exec $(DJANGO_DOCKER_CONTAINER_NAME) python manage.py $(MANAGE_ARGS)
+
+startapp:
+	mkdir -p $(DJANGO_PROJECT_NAME)/$(MANAGE_ARGS)
+	$(DOCKER_COMPOSE_COMMAND) exec --user $(UID):$(UID) $(DJANGO_DOCKER_CONTAINER_NAME) python manage.py startapp $(MANAGE_ARGS) $(DJANGO_PROJECT_NAME)/$(MANAGE_ARGS)
 
 hooks:
 	cp hooks/* .git/hooks/
