@@ -48,6 +48,12 @@ make manage <command1> <command2> ...
 # make manage shell
 ```
 
+## Creating Apps
+
+```Bash
+make startapp <app-name>
+```
+
 ## Production Access
 
 ### Getting Setup
@@ -115,3 +121,41 @@ make prod-up
 # SSH to server
 make prod-ssh
 ```
+
+## Development Environment Debugging
+
+### Docker Can't Access Project Files (manage.py)
+
+Usually a problem on Linux
+
+#### Error Messages
+
+`python: can't open file 'manage.py': [Errno 2]`
+
+#### Solution 1
+
+Set Docker User (on Linux)
+
+```Bash
+sudo groupadd docker
+sudo gpasswd -a $USER docker
+newgrp docker
+# Log out, back in may help, or restart computer
+```
+
+#### Solution 2
+
+Run Docker commands as Sudo
+
+```Bash
+sudo docker-compose up
+```
+
+### App Not Accessible From browser
+
+Usually means a syntax or "code" error, currently `make up` does not show _all_ Django errors
+
+#### Solution 1
+
+* Get back to a good state, checkout master
+* Once in a good state, change code back to bad state, and `make up` output might show errors
