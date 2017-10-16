@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'app.user',
 ]
 
 MIDDLEWARE = [
@@ -140,3 +141,6 @@ X_FRAME_OPTIONS = 'DENY'
 SESSION_COOKIE_SECURE = False
 SECURE_HSTS_SECONDS = False
 SECURE_SSL_REDIRECT = False
+
+# Setup Custom Auth User
+AUTH_USER_MODEL = 'user.User'

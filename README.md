@@ -171,15 +171,6 @@ Run Docker commands as Sudo
 sudo docker-compose up
 ```
 
-### App Not Accessible From browser
-
-Usually means a syntax or "code" error, currently `make up` does not show _all_ Django errors
-
-#### Solution 1
-
-* Get back to a good state, checkout master
-* Once in a good state, change code back to bad state, and `make up` output might show errors
-
 ## Manual DevOps Server Settings
 
 ### Server Firewall

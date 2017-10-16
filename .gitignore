@@ -55,6 +55,7 @@ target/
 
 # Vim
 .ropeproject
+*.swp
 
 # Docker Imports Exports
 *.zip

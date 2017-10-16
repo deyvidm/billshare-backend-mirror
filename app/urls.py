@@ -15,7 +15,8 @@ Including another URLconf
 """
 from django.conf.urls import url
 
-from app.users.views import Users
+from app.user.views import UserView
+
 from app.url_handlers.views import (
     handler403,
     handler404,
@@ -24,7 +25,7 @@ from app.url_handlers.views import (
 
 
 urlpatterns = [
-    url(r'^users/', Users.as_view()),
+    url(r'^user/', UserView.as_view()),
 ]
 
 handle403 = handler403
