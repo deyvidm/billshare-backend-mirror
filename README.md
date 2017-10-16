@@ -179,3 +179,40 @@ Usually means a syntax or "code" error, currently `make up` does not show _all_ 
 
 * Get back to a good state, checkout master
 * Once in a good state, change code back to bad state, and `make up` output might show errors
+
+## Manual DevOps Server Settings
+
+### Server Firewall
+
+Inbound rules are for SSH, Docker Swarm, HTTPS, HTTP, API Port
+
+```Bash
+Inbound Rules
+Type    Protocol    Port Range  Destinations
+SSH     TCP         22          All IPv4 All IPv6
+HTTP    TCP         80          All IPv4 All IPv6
+HTTPS   TCP         443         All IPv4 All IPv6
+Custom  TCP         2376        All IPv4 All IPv6
+Custom  TCP         2377        All IPv4 All IPv6
+Custom  TCP         3000        All IPv4 All IPv6
+Custom  TCP         7946        All IPv4 All IPv6
+Custom  UDP         4789        All IPv4 All IPv6
+Custom  UDP         7946        All IPv4 All IPv6
+
+Outbound Rules
+Type        Protocol    Port Range  Destinations
+ICMP        ICMP            -       All IPv4 All IPv6
+All TCP     TCP         All ports   All IPv4 All IPv6
+All UDP     UDP         All ports   All IPv4 All IPv6
+```
+
+### Namecheap
+
+```Bash
+Type        Host            Value                   TTL
+A Record    @               <IP Address>            Automatic
+A Record    www             <IP Address>            Automatic
+NS Record   billshare.io    ns3.digitalocean.com.   Automatic
+NS Record   billshare.io    ns1.digitalocean.com.   Automatic
+NS Record   billshare.io    ns2.digitalocean.com.   Automatic
+```
