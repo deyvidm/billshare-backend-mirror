@@ -12,6 +12,7 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser):
+    objects = UserManager()
 
     email = models.EmailField(
         max_length=255,
