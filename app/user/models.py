@@ -1,16 +1,29 @@
 from django.contrib.auth.models import AbstractBaseUser
 from django.db import models
-from django.utils.translation import ugettext_lazy as _
 
 
 class User(AbstractBaseUser):
 
     email = models.EmailField(
-        _('email address'),
         max_length=255,
         unique=True,
-        db_index=True
+        db_index=True,
+        blank=False,
+        null=False,
+    )
+    first_name = models.TextField(
+        max_length=255,
+        blank=False,
+        null=False,
+    )
+    last_name = models.TextField(
+        max_length=255,
+        blank=False,
+        null=False,
     )
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = []
+    REQUIRED_FIELDS = [
+        'first_name',
+        'last_name'
+    ]
