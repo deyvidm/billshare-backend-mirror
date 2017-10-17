@@ -73,6 +73,7 @@ hooks:
 
 machine-import:
 	machine-import $(DOCKER_NAME).zip
+	@echo '!! Hard Delete $(DOCKER_NAME).zip'
 
 machine-export:
 	machine-export $(DOCKER_NAME)

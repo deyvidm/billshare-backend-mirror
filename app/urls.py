@@ -25,7 +25,7 @@ from app.url_handlers.views import (
 
 
 urlpatterns = [
-    url(r'^user/', UserView.as_view()),
+    url(r'^user/(?P<user_id>\d+)/$', UserView.as_view()),
 ]
 
 handle403 = handler403
