@@ -97,10 +97,12 @@ prod-stop:
 	$(DOCKER_COMPOSE_COMMAND) -f $(DOCKER_COMPOSE_PRODUCTION_YAML) stop
 
 prod-connect:
+	@echo '!! Copy the last line and manually run it in your current terminal session'
 	$(DOCKER_MACHINE_COMMAND) env $(DOCKER_NAME)
 	eval $$($(DOCKER_MACHINE_COMMAND) env $(DOCKER_NAME))
 
 prod-disconnect:
+	@echo '!! Copy the last line and manually run it in your current terminal session'
 	eval $$($(DOCKER_MACHINE_COMMAND) env -u)
 
 prod-manage:
