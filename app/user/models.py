@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.db import models
+from django.forms import model_to_dict
 
 
 class UserManager(BaseUserManager):
@@ -9,6 +10,17 @@ class UserManager(BaseUserManager):
         user.set_password(password)
         user.save()
         return user
+
+    def get_user(self, params):
+        user = self.get(**params)
+
+        return model_to_dict(
+            user,
+            fields=None,
+            exclude=[
+                'password',
+            ],
+        )
 
 
 class User(AbstractBaseUser):
