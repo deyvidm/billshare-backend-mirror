@@ -21,6 +21,13 @@ make up
 
 > Check `127.0.0.1:3000` to see if server is up and running
 
+## Rebuilding Docker
+
+```Bash
+make build
+make up
+```
+
 ## Basic Docker Commands
 
 ```Bash
