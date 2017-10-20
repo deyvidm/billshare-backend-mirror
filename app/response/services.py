@@ -5,10 +5,10 @@ from django.conf import settings
 class ResponseService():
 
     def success(self, response):
-        return JsonResponse({
-            'data': response,
-            'status': 200,
-        })
+        return JsonResponse(
+            data=response,
+            status=200,
+        )
 
     def invalid_id(self, response):
         return self.__prod_sanitization({
