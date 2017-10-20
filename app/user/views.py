@@ -2,8 +2,8 @@ from django.views import View
 from django.http import JsonResponse
 
 from app.user.serializers import UserIdSerializer
-from app.user.service import UserService
-from app.response.service import ResponseService
+from app.user.services import UserService
+from app.response.services import ResponseService
 
 
 class UserView(View):

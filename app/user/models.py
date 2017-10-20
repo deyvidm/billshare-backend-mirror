@@ -11,16 +11,39 @@ class UserManager(BaseUserManager):
         user.save()
         return user
 
-    def get_user(self, params):
-        user = self.get(**params)
+    def get_user(self, query_params):
+        included_fields = None
+        excluded_fields = [
+            'password',
+        ]
+
+        user = self.get(**query_params)
 
         return model_to_dict(
             user,
-            fields=None,
-            exclude=[
-                'password',
-            ],
+            fields=included_fields,
+            exclude=excluded_fields,
         )
+
+    def update_user(self, query_params, update_params):
+        excluded_fields = [
+            'password',
+        ]
+
+        user = self.get(**query_params)
+
+        for key, value in update_params.items():
+            if key not in excluded_fields:
+                setattr(user, key, value)
+
+        if 'password' in update_params:
+            user.set_password(update_params['password'])
+
+        user.save()
+
+    def delete_user(self, query_params):
+        user = self.get(**query_params)
+        user.delete()
 
 
 class User(AbstractBaseUser):
