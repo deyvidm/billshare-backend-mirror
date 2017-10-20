@@ -21,6 +21,13 @@ make up
 
 > Check `127.0.0.1:3000` to see if server is up and running
 
+## Rebuilding Docker
+
+```Bash
+make build
+make up
+```
+
 ## Basic Docker Commands
 
 ```Bash
@@ -171,11 +178,39 @@ Run Docker commands as Sudo
 sudo docker-compose up
 ```
 
-### App Not Accessible From browser
+## Manual DevOps Server Settings
 
-Usually means a syntax or "code" error, currently `make up` does not show _all_ Django errors
+### Server Firewall
 
-#### Solution 1
+Inbound rules are for SSH, Docker Swarm, HTTPS, HTTP, API Port
 
-* Get back to a good state, checkout master
-* Once in a good state, change code back to bad state, and `make up` output might show errors
+```Bash
+Inbound Rules
+Type    Protocol    Port Range  Destinations
+SSH     TCP         22          All IPv4 All IPv6
+HTTP    TCP         80          All IPv4 All IPv6
+HTTPS   TCP         443         All IPv4 All IPv6
+Custom  TCP         2376        All IPv4 All IPv6
+Custom  TCP         2377        All IPv4 All IPv6
+Custom  TCP         3000        All IPv4 All IPv6
+Custom  TCP         7946        All IPv4 All IPv6
+Custom  UDP         4789        All IPv4 All IPv6
+Custom  UDP         7946        All IPv4 All IPv6
+
+Outbound Rules
+Type        Protocol    Port Range  Destinations
+ICMP        ICMP            -       All IPv4 All IPv6
+All TCP     TCP         All ports   All IPv4 All IPv6
+All UDP     UDP         All ports   All IPv4 All IPv6
+```
+
+### Namecheap
+
+```Bash
+Type        Host            Value                   TTL
+A Record    @               <IP Address>            Automatic
+A Record    www             <IP Address>            Automatic
+NS Record   billshare.io    ns3.digitalocean.com.   Automatic
+NS Record   billshare.io    ns1.digitalocean.com.   Automatic
+NS Record   billshare.io    ns2.digitalocean.com.   Automatic
+```

@@ -12,28 +12,35 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 
 from os import (
     environ,
-    getenv,
     path,
 )
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = path.dirname(path.dirname(path.abspath(__file__)))
 
+# Environment
+DJANGO_ENV = environ['DJANGO_ENV']
+DJANGO_ENV_PROD = 'prod'
+DJANGO_ENV_DEV = 'dev'
+
+# Usable settings constant
+DJANGO_ENV_IS_PROD = DJANGO_ENV == DJANGO_ENV_PROD
+
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = environ['DJANGO_SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
-if getenv('DJANGO_ENV') == 'prod':
+if DJANGO_ENV == DJANGO_ENV_PROD:
     DEBUG = False
-elif getenv('DJANGO_ENV') == 'dev':
+elif DJANGO_ENV == DJANGO_ENV_DEV:
     DEBUG = True
 
-if getenv('DJANGO_ENV') == 'prod':
+if DJANGO_ENV == DJANGO_ENV_PROD:
     ALLOWED_HOSTS = [
         'billshare.io',
         'billshare.io:3000',
     ]
-elif getenv('DJANGO_ENV') == 'dev':
+elif DJANGO_ENV == DJANGO_ENV_DEV:
     ALLOWED_HOSTS = [
         'localhost',
         'localhost:3000',
@@ -48,6 +55,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'app.user',
     'corsheaders',
 ]
 
@@ -138,10 +146,18 @@ SECURE_BROWSER_XSS_FILTER = True
 
 X_FRAME_OPTIONS = 'DENY'
 
+PREPEND_WWW = False
+
+# For SEO reasons, choose one or the other
+APPEND_SLASH = True
+
 # SSL Settings
 SESSION_COOKIE_SECURE = False
 SECURE_HSTS_SECONDS = False
 SECURE_SSL_REDIRECT = False
+
+# Setup Custom Auth User
+AUTH_USER_MODEL = 'user.User'
 
 # Cors Middleware
 CORS_ORIGIN_ALLOW_ALL = False
