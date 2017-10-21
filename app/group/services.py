@@ -1,5 +1,5 @@
 from app.group.models import Group, GroupUser
-from app.user.models import User
+from app.user.services import UserService
 from django.forms import model_to_dict
 
 
@@ -8,16 +8,19 @@ class GroupService:
         group = Group.objects.get(pk=group_id)
         group_users = GroupUser.objects.filter(group=group)
 
+        user_service = UserService()
+
         users = []
-        for u in group_users:
-            users.append(User.objects.get_user({'pk': u.user_id}))
+        for user in group_users:
+            users.append(user_service.get(user.user_id))
 
-        creator = User.objects.get_user({'pk': group.creator.id})
-        return_dict = model_to_dict(group)
-        return_dict['users'] = users
-        return_dict['creator'] = creator
+        creator = user_service.get(group.creator.id)
 
-        return return_dict
+        group_dict = model_to_dict(group)
+        group_dict['users'] = users
+        group_dict['creator'] = creator
+
+        return group_dict
 
     def create(self, label, user_id):
         Group.objects.create(label=label, creator=user_id)
