@@ -1,9 +1,10 @@
 from django.views import View
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
+
 from app.group.serializers import GroupIdSerializer
 from app.response.services import ResponseService
 from app.group.services import GroupService, GroupUserService
-from django.views.decorators.csrf import csrf_exempt
-from django.utils.decorators import method_decorator
 
 
 @method_decorator(csrf_exempt, name='dispatch')
@@ -32,4 +33,19 @@ class GroupView(View):
         return self.response_service.success(group)
 
     def delete(self, request, group_id):
-        return {":)": ":)"}
+        valid_group = GroupIdSerializer(data={
+            'id': group_id
+        })
+
+        if valid_group.is_valid() is False:
+            return self.response_service.invalid_id({'error': valid_group.errors})
+
+        try:
+
+            self.group_service.delete(group_id)
+
+        except Exception as e:
+            return self.response_service.service_exception({'error': str(e)})
+
+        # TODO not sure what this response should be.
+        return self.response_service.success({})

@@ -1,6 +1,7 @@
+from django.forms import model_to_dict
+
 from app.group.models import Group, GroupUser
 from app.user.services import UserService
-from django.forms import model_to_dict
 
 
 class GroupService:
@@ -22,8 +23,8 @@ class GroupService:
 
         return group_dict
 
-    def create(self, label, user_id):
-        Group.objects.create(label=label, creator=user_id)
+    def create(self, label, user):
+        Group.objects.create(label=label, creator=user)
 
     def update(self, group_id, updated_fields):
         Group.objects.filter(pk=group_id).update(updated_fields)
@@ -37,5 +38,5 @@ class GroupUserService:
     def add_users(self, group_id, user_ids):
         group = Group.objects.get(pk=group_id)
         for user_id in user_ids:
-            user = User.objects.get(pk=user_id)
+            user = UserService.get(pk=user_id)
             GroupUser.objects.create(group=group, user=user)
