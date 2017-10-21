@@ -15,12 +15,12 @@ class Group(models.Model):
 
 
 class GroupUser(models.Model):
-    group_id = models.ForeignKey(
+    group = models.ForeignKey(
         'Group',
         on_delete=models.CASCADE
     )
 
-    user_id = models.ForeignKey(
+    user = models.ForeignKey(
         'user.User',
         on_delete=models.CASCADE
     )
