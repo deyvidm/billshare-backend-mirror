@@ -16,7 +16,7 @@ Including another URLconf
 from django.conf.urls import url
 
 from app.user.views import UserView
-from app.group.views import GroupView, GroupUserView
+from app.group.views import GroupView
 
 from app.url_handlers.views import (
     handler403,
@@ -27,7 +27,6 @@ from app.url_handlers.views import (
 urlpatterns = [
     url(r'^user/(?P<user_id>\d+)/$', UserView.as_view()),
     url(r'^group/(?P<group_id>\d+)/$', GroupView.as_view()),
-    url(r'^group/(?P<group_id>\d+)/users$', GroupUserView.as_view()),
 ]
 
 handle403 = handler403

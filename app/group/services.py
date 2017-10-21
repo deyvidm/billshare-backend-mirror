@@ -5,7 +5,19 @@ from django.forms import model_to_dict
 
 class GroupService:
     def get(self, group_id):
-        return model_to_dict(Group.objects.get(pk=group_id))
+        group = Group.objects.get(pk=group_id)
+        group_users = GroupUser.objects.filter(group=group)
+
+        users = []
+        for u in group_users:
+            users.append(User.objects.get_user({'pk': u.user_id}))
+
+        creator = User.objects.get_user({'pk': group.creator.id})
+        return_dict = model_to_dict(group)
+        return_dict['users'] = users
+        return_dict['creator'] = creator
+
+        return return_dict
 
     def create(self, label, user_id):
         Group.objects.create(label=label, creator=user_id)
@@ -18,18 +30,6 @@ class GroupService:
 
 
 class GroupUserService:
-
-    def get(self, group_id):
-        group = Group.objects.get(pk=group_id)
-        group_data = GroupUser.objects.filter(group=group).values('group', 'user')
-        users = []
-        for row in group_data:
-            users.append(row['user'])
-
-        return {
-            'group_id': group_data[0]['group'],
-            'users': users
-        }
 
     def add_users(self, group_id, user_ids):
         group = Group.objects.get(pk=group_id)
