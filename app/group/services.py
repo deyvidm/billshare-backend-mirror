@@ -31,14 +31,24 @@ class GroupService:
         except ObjectDoesNotExist:
             return False
 
-        group = Group.objects.create(label=label, creator=creator)
+        if creator_email not in user_emails:
+            user_emails.append(creator_email)
 
+        valid_users = []
         for email in user_emails:
             try:
                 user = User.objects.get(email=email)
-                GroupUser.objects.create(group=group, user=user)
+                valid_users.append(user)
             except ObjectDoesNotExist:
                 pass
+
+        if len(valid_users) == 1:
+            return False
+
+        group = Group.objects.create(label=label, creator=creator)
+
+        for user in valid_users:
+            GroupUser.objects.create(group=group, user=user)
 
         return self.get(group.id)
 
