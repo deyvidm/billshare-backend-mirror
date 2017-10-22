@@ -25,11 +25,11 @@ class GroupService:
 
         return group_dict
 
-    def create(self, label, creator_email, memebers_emails):
+    def create(self, label, creator_email, user_emails):
         creator = User.objects.get(email=creator_email)
         group = Group.objects.create(label=label, creator=creator)
 
-        for email in memebers_emails:
+        for email in user_emails:
             try:
                 user = User.objects.get(email=email)
                 GroupUser.objects.create(group=group, user=user)

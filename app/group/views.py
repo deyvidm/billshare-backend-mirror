@@ -4,10 +4,9 @@ from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 
-from app.group.serializers import GroupIdSerializer, GroupLabelSerializer
+from app.group.serializers import GroupIdSerializer, GroupLabelSerializer, CreateGroupSerializer
 from app.group.services import GroupService
 from app.response.services import ResponseService
-from app.user.serializers import EmailSerializer
 
 
 @method_decorator(csrf_exempt, name='dispatch')
@@ -46,7 +45,6 @@ class GroupView(View):
         except Exception as e:
             return self.response_service.service_exception({'error': str(e)})
 
-        # TODO not sure what this response should be.
         return self.response_service.success({})
 
     def post(self, request):
@@ -55,32 +53,21 @@ class GroupView(View):
         except Exception as e:
             return self.response_service.service_exception({'error': str(e)})
 
-        valid_label = GroupLabelSerializer(data={
-            'label': body.get('label', False)
+        valid_create_group = CreateGroupSerializer(data={
+            'label': body.get('label', False),
+            'creator': body.get('creator', False),
+            'group_users': body.get('group_users', False)
         })
-        if valid_label.is_valid() is False:
-            return self.response_service.invalid_id({'error': valid_label.errors})
+        if valid_create_group.is_valid() is False:
+            return self.response_service.invalid_id({'error': valid_create_group.errors})
 
-        valid_creator = EmailSerializer(data={
-            'email': body.get('creator', False)
-        })
-        if valid_creator.is_valid() is False:
-            return self.response_service.invalid_id({'error': valid_creator.errors})
-
-        if body.get('members', False) is False:
-            return self.response_service.invalid_id({'error': 'missing members'})
-
-        for member in body.get('members'):
-            valid_member = EmailSerializer(data={
-                'email': member
-            })
-            if valid_member.is_valid() is False:
-                return self.response_service.invalid_id({'error': valid_member.errors})
+        if body.get('group_users', False) is False:
+            return self.response_service.invalid_id({'error': 'missing group users'})
 
         group = self.group_service.create(
             label=body['label'],
             creator_email=body['creator'],
-            memebers_emails=body['members']
+            user_emails=body['group_users']
         )
 
-        return self.response_service.success({"request": group})
+        return self.response_service.success(group)
