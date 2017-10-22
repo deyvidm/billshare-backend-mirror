@@ -26,7 +26,11 @@ class GroupService:
         return group_dict
 
     def create(self, label, creator_email, user_emails):
-        creator = User.objects.get(email=creator_email)
+        try:
+            creator = User.objects.get(email=creator_email)
+        except ObjectDoesNotExist:
+            return False
+
         group = Group.objects.create(label=label, creator=creator)
 
         for email in user_emails:
