@@ -1,6 +1,8 @@
 from django.forms import model_to_dict
+from django.core.exceptions import ObjectDoesNotExist
 
 from app.group.models import Group, GroupUser
+from app.user.models import User
 from app.user.services import UserService
 
 
@@ -23,20 +25,21 @@ class GroupService:
 
         return group_dict
 
-    def create(self, label, user):
-        Group.objects.create(label=label, creator=user)
+    def create(self, label, creator_email, memebers_emails):
+        creator = User.objects.get(email=creator_email)
+        group = Group.objects.create(label=label, creator=creator)
+
+        for email in memebers_emails:
+            try:
+                user = User.objects.get(email=email)
+                GroupUser.objects.create(group=group, user=user)
+            except ObjectDoesNotExist:
+                pass
+
+        return self.get(group.id)
 
     def update(self, group_id, updated_fields):
         Group.objects.filter(pk=group_id).update(updated_fields)
 
     def delete(self, group_id):
         Group.objects.get(pk=group_id).delete()
-
-
-class GroupUserService:
-
-    def add_users(self, group_id, user_ids):
-        group = Group.objects.get(pk=group_id)
-        for user_id in user_ids:
-            user = UserService.get(pk=user_id)
-            GroupUser.objects.create(group=group, user=user)

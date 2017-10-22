@@ -27,6 +27,7 @@ from app.url_handlers.views import (
 urlpatterns = [
     url(r'^user/(?P<user_id>\d+)/$', UserView.as_view()),
     url(r'^group/(?P<group_id>\d+)/$', GroupView.as_view()),
+    url(r'^group/$', GroupView.as_view()),
 ]
 
 handle403 = handler403
