@@ -7,7 +7,7 @@ class ResponseService():
     def json_decode_exception(self, response):
         return JsonResponse(
             data=response,
-            status=404,
+            status=400,
         )
 
     def failure(self, response):
