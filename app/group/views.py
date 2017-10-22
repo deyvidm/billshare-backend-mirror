@@ -1,12 +1,16 @@
 import json
 
+from django.core.exceptions import ObjectDoesNotExist
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 
-from app.group.serializers import GroupIdSerializer, GroupLabelSerializer, CreateGroupSerializer
+from app.group.models import GroupUser
+from app.group.serializers import GroupIdSerializer, CreateGroupSerializer
 from app.group.services import GroupService
 from app.response.services import ResponseService
+from app.user.serializers import UserIdSerializer
+from app.user.models import User
 
 
 @method_decorator(csrf_exempt, name='dispatch')
@@ -50,8 +54,8 @@ class GroupView(View):
     def post(self, request):
         try:
             body = json.loads(request.body)
-        except Exception as e:
-            return self.response_service.service_exception({'error': str(e)})
+        except ValueError as e:
+            return self.response_service.json_decode_exception({'error': str(e)})
 
         valid_create_group = CreateGroupSerializer(data={
             'label': body.get('label', False),
@@ -71,3 +75,30 @@ class GroupView(View):
             return self.response_service.service_exception({'error': 'There was an error'})
 
         return self.response_service.success(group)
+
+
+class GroupUsersView(View):
+
+    group_service = GroupService()
+    response_service = ResponseService()
+
+    def get(self, request, user_id):
+
+        valid_user = UserIdSerializer(data={
+            'id': user_id
+        })
+
+        if valid_user.is_valid() is False:
+            return self.response_service.invalid_id({'error': valid_user.errors})
+
+        try:
+            user = User.objects.get(id=user_id)
+            group_objects = GroupUser.objects.filter(user=user).values('group')
+            groups_formatted = []
+            for group in group_objects:
+                groups_formatted.append(self.group_service.get(group['group']))
+
+        except ObjectDoesNotExist as e:
+            return self.response_service.service_exception({'error': str(e)})
+
+        return self.response_service.success(groups_formatted)
