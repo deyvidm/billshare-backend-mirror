@@ -4,6 +4,18 @@ from django.conf import settings
 
 class ResponseService():
 
+    def json_decode_exception(self, response):
+        return JsonResponse(
+            data=response,
+            status=400,
+        )
+
+    def failure(self, response):
+        return JsonResponse(
+            data=response,
+            status=404,
+        )
+
     def success(self, response):
         return JsonResponse(
             data=response,
