@@ -15,13 +15,14 @@ Including another URLconf
 """
 from django.conf.urls import url
 
-from app.user.views import UserView, GetUserIdView
 from app.auth.views import LoginView, LogoutView, CreateUserView
+from app.group.views import GroupView, GroupUsersView
+from app.user.views import UserView, GetUserIdView
 
 from app.url_handlers.views import (
-    handler403,
-    handler404,
-    handler500,
+   handler403,
+   handler404,
+   handler500,
 )
 
 urlpatterns = [
