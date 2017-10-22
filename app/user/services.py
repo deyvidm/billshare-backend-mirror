@@ -1,3 +1,5 @@
+from django.core.exceptions import ObjectDoesNotExist
+
 from app.user.models import User
 
 
@@ -14,3 +16,12 @@ class UserService():
 
     def delete(self, user_id):
         return User.objects.delete_user({'pk': user_id})
+
+    def email_exists(self, email):
+
+        try:
+            User.objects.get_user({'email': email})
+        except ObjectDoesNotExist:
+            return False
+
+        return True
