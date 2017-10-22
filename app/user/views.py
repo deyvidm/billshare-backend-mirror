@@ -1,6 +1,7 @@
 from django.views import View
 from django.http import JsonResponse
 
+from app.auth.services import AuthService
 from app.user.serializers import UserIdSerializer
 from app.user.services import UserService
 from app.response.services import ResponseService
@@ -26,3 +27,16 @@ class UserView(View):
             return response_service.service_exception({'error': str(e)})
 
         return response_service.success(user)
+
+
+class GetUserIdView(View):
+
+    def get(self, request):
+
+        auth_service = AuthService()
+        response_service = ResponseService()
+
+        if auth_service.is_authenticated is False:
+            return response_service.failure({'error': 'Not logged in.'})
+
+        return response_service.success({'user_id': request.user.id})
