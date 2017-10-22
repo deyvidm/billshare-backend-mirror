@@ -16,6 +16,7 @@ Including another URLconf
 from django.conf.urls import url
 
 from app.user.views import UserView
+from app.auth.views import LoginView
 
 from app.url_handlers.views import (
     handler403,
@@ -26,6 +27,7 @@ from app.url_handlers.views import (
 
 urlpatterns = [
     url(r'^user/(?P<user_id>\d+)/$', UserView.as_view()),
+    url(r'^auth/login/$', LoginView.as_view()),
 ]
 
 handle403 = handler403
