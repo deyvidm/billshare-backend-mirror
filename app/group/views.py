@@ -69,7 +69,7 @@ class GroupView(View):
             user_emails=body['group_users']
         )
 
-        if not group:
+        if group is None:
             return self.response_service.service_exception({'error': 'There was an error'})
 
         return self.response_service.success(group)

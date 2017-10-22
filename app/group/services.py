@@ -29,7 +29,7 @@ class GroupService:
         try:
             creator = User.objects.get(email=creator_email)
         except ObjectDoesNotExist:
-            return False
+            return None
 
         if creator_email not in user_emails:
             user_emails.append(creator_email)
@@ -43,7 +43,7 @@ class GroupService:
                 pass
 
         if len(valid_users) == 1:
-            return False
+            return None
 
         group = Group.objects.create(label=label, creator=creator)
 
