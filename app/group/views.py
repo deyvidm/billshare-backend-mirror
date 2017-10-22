@@ -61,9 +61,6 @@ class GroupView(View):
         if valid_create_group.is_valid() is False:
             return self.response_service.invalid_id({'error': valid_create_group.errors})
 
-        if body.get('group_users', False) is False:
-            return self.response_service.invalid_id({'error': 'missing group users'})
-
         group = self.group_service.create(
             label=body['label'],
             creator_email=body['creator'],
