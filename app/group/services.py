@@ -57,3 +57,16 @@ class GroupService:
 
     def delete(self, group_id):
         Group.objects.get(pk=group_id).delete()
+
+
+class GroupUserService:
+    def get(self, user_id):
+        group_service = GroupService()
+        user = User.objects.get(id=user_id)
+        group_objects = GroupUser.objects.filter(user=user).values('group')
+        groups_formatted = []
+
+        for group in group_objects:
+            groups_formatted.append(group_service.get(group['group']))
+
+        return groups_formatted

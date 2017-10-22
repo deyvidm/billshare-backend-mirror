@@ -5,12 +5,10 @@ from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 
-from app.group.models import GroupUser
 from app.group.serializers import GroupIdSerializer, CreateGroupSerializer
-from app.group.services import GroupService
+from app.group.services import GroupService, GroupUserService
 from app.response.services import ResponseService
 from app.user.serializers import UserIdSerializer
-from app.user.models import User
 
 
 @method_decorator(csrf_exempt, name='dispatch')
@@ -79,8 +77,8 @@ class GroupView(View):
 
 class GroupUsersView(View):
 
-    group_service = GroupService()
     response_service = ResponseService()
+    group_user_service = GroupUserService()
 
     def get(self, request, user_id):
 
@@ -92,13 +90,8 @@ class GroupUsersView(View):
             return self.response_service.invalid_id({'error': valid_user.errors})
 
         try:
-            user = User.objects.get(id=user_id)
-            group_objects = GroupUser.objects.filter(user=user).values('group')
-            groups_formatted = []
-            for group in group_objects:
-                groups_formatted.append(self.group_service.get(group['group']))
-
+            group_list = self.group_user_service.get(user_id)
         except ObjectDoesNotExist as e:
             return self.response_service.service_exception({'error': str(e)})
 
-        return self.response_service.success(groups_formatted)
+        return self.response_service.success(group_list)
