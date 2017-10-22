@@ -20,6 +20,7 @@ class ResponseService():
         return JsonResponse(
             data=response,
             status=200,
+            safe=False
         )
 
     def invalid_id(self, response):
