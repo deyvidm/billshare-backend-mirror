@@ -1,9 +1,11 @@
 from functools import reduce
 
+from django.forms import model_to_dict
 from djmoney.money import Money
 
 from app.bill.models import Bill
 from app.group.models import Group
+from app.transaction.models import Transaction
 from app.transaction.models import Transaction
 from app.user.models import User
 
@@ -89,3 +91,31 @@ class TransactionService:
             payee=payee,
             debt=Money(amount, currency)
         )
+
+    def get(self, bill_id):
+        bill = Bill.objects.get(id=bill_id)
+        transactions = Transaction.objects.filter(bill=bill)
+
+        billDict = {
+            "bill": model_to_dict(bill),
+            'transactions': []
+        }
+        for t in transactions:
+            billDict['transactions'].append(self.model_to_dict(t))
+
+        return billDict
+
+    # TODO Guido pls forgive me
+    def model_to_dict(self, transaction):
+        return {
+            "label": transaction.label,
+            "bill": transaction.bill.id,
+            "group": transaction.group.id,
+            "debt": {
+                "amount": transaction.debt.amount,
+                "currency": transaction.debt.currency.code
+            },
+            "payee": transaction.payee.id,
+            "payer": transaction.payer.id,
+            "resolved": transaction.resolved,
+        }

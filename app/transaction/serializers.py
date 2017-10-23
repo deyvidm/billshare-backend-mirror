@@ -10,3 +10,9 @@ class TransactionSerializer(serializers.ModelSerializer):
 
     paid = serializers.DecimalField(max_digits=10, decimal_places=2)
     owes = serializers.DecimalField(max_digits=10, decimal_places=2)
+
+
+class TransactionIDSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Transaction
+        fields = ['id']

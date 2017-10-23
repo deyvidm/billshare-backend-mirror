@@ -35,6 +35,7 @@ urlpatterns = [
     url(r'^group/(?P<group_id>\d+)/$', GroupView.as_view()),
 
     url(r'^transaction/$', TranasactionView.as_view()),
+    url(r'^transaction/(?P<transaction_id>\d+)/$', TranasactionView.as_view()),
 
     url(r'^user/$', GetUserIdView.as_view()),
     url(r'^user/(?P<user_id>\d+)/$', UserView.as_view()),
