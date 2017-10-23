@@ -2,7 +2,7 @@ from django.views import View
 
 from app.auth.services import AuthService
 from app.user.serializers import UserIdSerializer
-from app.user.services import UserService
+from app.user.services import UserService, UserTransactionService
 from app.response.services import ResponseService
 
 
@@ -39,3 +39,21 @@ class GetUserIdView(View):
             return response_service.failure({'error': 'Not logged in.'})
 
         return response_service.success({'user_id': request.user.id})
+
+
+class UserTransactionView(View):
+
+    response_service = ResponseService()
+    user_transaction_service = UserTransactionService()
+
+    def get(self, request, user_id):
+        valid_group = UserIdSerializer(data={'id': user_id})
+        if valid_group.is_valid() is False:
+            return self.response_service.invalid_id({'error': valid_group.errors})
+
+        try:
+            transactions = self.user_transaction_service.get(user_id)
+        except Exception as e:
+            return self.response_service.service_exception({'error': str(e)})
+
+        return self.response_service.success(transactions)

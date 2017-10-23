@@ -1,5 +1,8 @@
 from django.core.exceptions import ObjectDoesNotExist
+from django.db.models import Q
 
+from app.transaction.services import TransactionService
+from app.transaction.models import Transaction
 from app.user.models import User
 
 
@@ -25,3 +28,21 @@ class UserService:
             return False
 
         return True
+
+
+class UserTransactionService:
+    def get(self, user_id):
+        transaction_service = TransactionService()
+        transactions = Transaction.objects.filter(
+            Q(payer=User.objects.get(id=user_id)) |
+            Q(payee=User.objects.get(id=user_id))
+        )
+
+        bills = sorted(set([t.bill.id for t in transactions]))
+
+        transactions_dict = []
+        for bill_id in bills:
+            transactions = transaction_service.get(bill_id)
+            transactions_dict.append(transactions)
+
+        return transactions_dict
