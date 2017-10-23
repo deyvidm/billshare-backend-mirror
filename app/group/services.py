@@ -20,8 +20,8 @@ class GroupService:
         creator = user_service.get(group.creator.id)
 
         group_dict = model_to_dict(group)
-        group_dict['users'] = users
-        group_dict['creator'] = creator
+        group_dict['group_users'] = users
+        # group_dict['creator'] = creator
 
         return group_dict
 
