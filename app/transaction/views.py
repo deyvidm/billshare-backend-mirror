@@ -5,14 +5,15 @@ from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 
 from app.bill.serializers import BillSerializer
+from app.transaction.services import TransactionService
 from app.response.services import ResponseService
-from app.transaction.serializers import TransactionSerializer
 
 
 @method_decorator(csrf_exempt, name='dispatch')
 class TranasactionView(View):
 
     response_service = ResponseService()
+    transaction_service = TransactionService()
 
     def post(self, request):
         try:
@@ -24,4 +25,10 @@ class TranasactionView(View):
         if valid_bill.is_valid() is False:
             return self.response_service.invalid_id({'error': valid_bill.errors})
 
-        return self.response_service.success({"good": ":)"})
+        result = self.transaction_service.crombobulate(body)
+        return self.response_service.success(result)
+
+        if self.transaction_service.crombobulate(body) is not True:
+            return self.response_service.failure({'error': 'something went wrong'})
+
+        return self.response_service.success(body)
