@@ -16,7 +16,7 @@ Including another URLconf
 from django.conf.urls import url
 
 from app.auth.views import LoginView, LogoutView, CreateUserView
-from app.group.views import GroupView, GroupUsersView
+from app.group.views import GroupView, GroupUsersView, GroupTransactionView
 from app.transaction.views import TranasactionView
 from app.user.views import UserView, GetUserIdView
 
@@ -33,6 +33,7 @@ urlpatterns = [
 
     url(r'^group/$', GroupView.as_view()),
     url(r'^group/(?P<group_id>\d+)/$', GroupView.as_view()),
+    url(r'^group/(?P<group_id>\d+)/transactions/$', GroupTransactionView.as_view()),
 
     url(r'^transaction/$', TranasactionView.as_view()),
     url(r'^transaction/(?P<transaction_id>\d+)/$', TranasactionView.as_view()),

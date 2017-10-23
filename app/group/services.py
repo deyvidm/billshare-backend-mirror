@@ -1,7 +1,9 @@
 from django.forms import model_to_dict
 from django.core.exceptions import ObjectDoesNotExist
 
+from app.bill.models import Bill
 from app.group.models import Group, GroupUser
+from app.transaction.services import TransactionService
 from app.user.models import User
 from app.user.services import UserService
 
@@ -70,3 +72,17 @@ class GroupUserService:
             groups_formatted.append(group_service.get(group['group']))
 
         return groups_formatted
+
+
+class GroupTransactionService:
+    def get(self, group_id):
+
+        transaction_service = TransactionService()
+
+        transactions_dict = []
+
+        for bill in Bill.objects.filter(group=Group.objects.get(id=group_id)):
+            transactions = transaction_service.get(bill.id)
+            transactions_dict.append(transactions)
+
+        return transactions_dict

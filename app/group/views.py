@@ -6,8 +6,9 @@ from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 
 from app.group.serializers import GroupIdSerializer, CreateGroupSerializer
-from app.group.services import GroupService, GroupUserService
+from app.group.services import GroupService, GroupUserService, GroupTransactionService
 from app.response.services import ResponseService
+from app.transaction.services import TransactionService
 from app.user.serializers import UserIdSerializer
 
 
@@ -95,3 +96,21 @@ class GroupUsersView(View):
             return self.response_service.service_exception({'error': str(e)})
 
         return self.response_service.success(group_list)
+
+
+class GroupTransactionView(View):
+
+    response_service = ResponseService()
+    group_transaction_service = GroupTransactionService()
+
+    def get(self, request, group_id):
+        valid_group = GroupIdSerializer(data={'id': group_id})
+        if valid_group.is_valid() is False:
+            return self.response_service.invalid_id({'error': valid_group.errors})
+
+        try:
+            transactions = self.group_transaction_service.get(group_id)
+        except Exception as e:
+            return self.response_service.service_exception({'error': str(e)})
+
+        return self.response_service.success(transactions)
