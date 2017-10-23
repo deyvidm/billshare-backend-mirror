@@ -7,5 +7,10 @@ class Bill(models.Model):
         blank=False,
         null=False,
     )
-
-    group = models.ForeignKey()
+    group = models.ForeignKey(
+        'group.Group'
+    )
+    creator = models.ForeignKey(
+        'user.User'
+    )
+    created_date = models.DateField()

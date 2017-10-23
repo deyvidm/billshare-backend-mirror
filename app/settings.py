@@ -56,8 +56,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'corsheaders',
+    'djmoney',
+    'app.bill',
+    'app.group',
+    'app.transaction',
     'app.user',
-    'app.group'
+
 ]
 
 MIDDLEWARE = [
