@@ -4,10 +4,9 @@ from djmoney.models.fields import MoneyField
 
 
 class Transaction(models.Model):
-    label = models.TextField(
+    label = models.CharField(
         max_length=255,
-        blank=False,
-        null=False,
+        blank=True,
     )
     bill = models.ForeignKey(
         "bill.Bill"

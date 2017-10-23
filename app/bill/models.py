@@ -13,4 +13,6 @@ class Bill(models.Model):
     creator = models.ForeignKey(
         'user.User'
     )
-    created_date = models.DateField()
+    created_date = models.DateField(
+        auto_now_add=True
+    )

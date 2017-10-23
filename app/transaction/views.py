@@ -25,10 +25,12 @@ class TranasactionView(View):
         if valid_bill.is_valid() is False:
             return self.response_service.invalid_id({'error': valid_bill.errors})
 
-        result = self.transaction_service.crombobulate(body)
-        return self.response_service.success(result)
+        try:
+            result = self.transaction_service.crombobulate(body)
+        except Exception as e:
+            return self.response_service.service_exception({'error': str(e)})
 
-        if self.transaction_service.crombobulate(body) is not True:
+        if result is not True:
             return self.response_service.failure({'error': 'something went wrong'})
 
-        return self.response_service.success(body)
+        return self.response_service.success(result)
