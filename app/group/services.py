@@ -21,7 +21,7 @@ class GroupService:
 
         group_dict = model_to_dict(group)
         group_dict['group_users'] = users
-        # group_dict['creator'] = creator
+        del(group_dict['creator'])
 
         return group_dict
 
