@@ -16,3 +16,9 @@ class TransactionIDSerializer(serializers.ModelSerializer):
     class Meta:
         model = Transaction
         fields = ['id']
+
+
+class UpdateTransactionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Transaction
+        fields = ['id', 'resolved']

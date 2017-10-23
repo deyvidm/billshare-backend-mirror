@@ -1,15 +1,11 @@
 import json
 
-from django.forms import model_to_dict
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 
-from djmoney.money import Money
-
-
 from app.bill.serializers import BillSerializer
-from app.transaction.serializers import TransactionIDSerializer
+from app.transaction.serializers import TransactionIDSerializer, UpdateTransactionSerializer
 from app.transaction.services import TransactionService
 from app.response.services import ResponseService
 
@@ -19,6 +15,22 @@ class TranasactionView(View):
 
     response_service = ResponseService()
     transaction_service = TransactionService()
+
+    def put(self, request, transaction_id):
+        try:
+            body = json.loads(request.body)
+        except ValueError as e:
+            return self.response_service.json_decode_exception({'error': str(e)})
+
+        valid_transaction_request = UpdateTransactionSerializer(data={
+            'id': transaction_id,
+            'resolve': body['resolved']
+        })
+        if valid_transaction_request.is_valid() is False:
+            return self.response_service.invalid_id({'serializer error': valid_transaction_request.errors})
+
+        self.transaction_service.update(transaction_id, body['resolved'])
+        return self.response_service.success({})
 
     def post(self, request):
         try:

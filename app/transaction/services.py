@@ -6,7 +6,6 @@ from djmoney.money import Money
 from app.bill.models import Bill
 from app.group.models import Group
 from app.transaction.models import Transaction
-from app.transaction.models import Transaction
 from app.user.models import User
 
 
@@ -108,6 +107,7 @@ class TransactionService:
     # TODO Guido pls forgive me
     def model_to_dict(self, transaction):
         return {
+            "id": transaction.id,
             "label": transaction.label,
             "bill": transaction.bill.id,
             "group": transaction.group.id,
@@ -119,3 +119,9 @@ class TransactionService:
             "payer": transaction.payer.id,
             "resolved": transaction.resolved,
         }
+
+    def update(self, transaction_id, resolved):
+        transaction = Transaction.objects.get(id=transaction_id)
+        transaction.resolved = resolved
+        transaction.save()
+        return True
