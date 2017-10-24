@@ -70,7 +70,7 @@ class TransactionService:
             if take_from['zerosum'] != 0:
                 underpaid.append(take_from)
 
-        return True
+        return bill
 
     def createBill(self, label, group_id, creator_id):
         return Bill.objects.create(

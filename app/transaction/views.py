@@ -43,14 +43,14 @@ class TranasactionView(View):
             return self.response_service.invalid_id({'error': valid_bill.errors})
 
         try:
-            result = self.transaction_service.crombobulate(body)
+            bill = self.transaction_service.crombobulate(body)
         except Exception as e:
             return self.response_service.service_exception({'error': str(e)})
 
-        if result is not True:
+        if bill is None:
             return self.response_service.failure({'error': 'something went wrong'})
 
-        return self.response_service.success(result)
+        return self.response_service.success(self.transaction_service.get(bill.id))
 
     def get(self, request, transaction_id):
 
