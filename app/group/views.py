@@ -98,10 +98,10 @@ class GroupUsersView(View):
         return self.response_service.success(group_list)
 
 
-class GroupTransactionView(View):
+class GroupTransactionsView(View):
 
     response_service = ResponseService()
-    group_transaction_service = GroupTransactionService()
+    group_service = GroupService()
 
     def get(self, request, group_id):
         valid_group = GroupIdSerializer(data={'id': group_id})
@@ -109,7 +109,7 @@ class GroupTransactionView(View):
             return self.response_service.invalid_id({'error': valid_group.errors})
 
         try:
-            transactions = self.group_transaction_service.get(group_id)
+            transactions = self.group_service.get_transactions(group_id)
         except Exception as e:
             return self.response_service.service_exception({'error': str(e)})
 

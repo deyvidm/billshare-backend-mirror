@@ -16,8 +16,7 @@ class Transaction(models.Model):
     )
     debt = MoneyField(
         max_digits=10,
-        decimal_places=2,
-        default_currency='CAD'
+        decimal_places=2
     )
     payee = models.ForeignKey(
         'user.User',

@@ -4,14 +4,14 @@ from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 
-from app.bill.serializers import BillSerializer
+from app.bill.serializers import TransactionOperationSerializer
 from app.transaction.serializers import TransactionIDSerializer, UpdateTransactionSerializer
 from app.transaction.services import TransactionService
 from app.response.services import ResponseService
 
 
 @method_decorator(csrf_exempt, name='dispatch')
-class TranasactionView(View):
+class TransactionView(View):
 
     response_service = ResponseService()
     transaction_service = TransactionService()
@@ -29,8 +29,8 @@ class TranasactionView(View):
         if valid_transaction_request.is_valid() is False:
             return self.response_service.invalid_id({'serializer error': valid_transaction_request.errors})
 
-        self.transaction_service.update(transaction_id, body['resolved'])
-        return self.response_service.success({})
+        transaction = self.transaction_service.update(transaction_id, body['resolved'])
+        return self.response_service.success(self.transaction_service.model_to_dict(transaction))
 
     def post(self, request):
         try:
@@ -38,12 +38,12 @@ class TranasactionView(View):
         except ValueError as e:
             return self.response_service.json_decode_exception({'error': str(e)})
 
-        valid_bill = BillSerializer(data=body)
+        valid_bill = TransactionOperationSerializer(data=body)
         if valid_bill.is_valid() is False:
             return self.response_service.invalid_id({'error': valid_bill.errors})
 
         try:
-            bill = self.transaction_service.crombobulate(body)
+            bill = self.transaction_service.processTransactionOperation(body)
         except Exception as e:
             return self.response_service.service_exception({'error': str(e)})
 

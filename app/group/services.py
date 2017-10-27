@@ -60,6 +60,17 @@ class GroupService:
     def delete(self, group_id):
         Group.objects.get(pk=group_id).delete()
 
+    def get_transactions(self, group_id):
+        transaction_service = TransactionService()
+
+        transactions_dict = []
+
+        for bill in Bill.objects.filter(group=Group.objects.get(id=group_id)):
+            transactions = transaction_service.get(bill.id)
+            transactions_dict.append(transactions)
+
+        return transactions_dict
+
 
 class GroupUserService:
     def get(self, user_id):
@@ -72,17 +83,3 @@ class GroupUserService:
             groups_formatted.append(group_service.get(group['group']))
 
         return groups_formatted
-
-
-class GroupTransactionService:
-    def get(self, group_id):
-
-        transaction_service = TransactionService()
-
-        transactions_dict = []
-
-        for bill in Bill.objects.filter(group=Group.objects.get(id=group_id)):
-            transactions = transaction_service.get(bill.id)
-            transactions_dict.append(transactions)
-
-        return transactions_dict

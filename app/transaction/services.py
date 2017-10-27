@@ -10,14 +10,13 @@ from app.user.models import User
 
 
 class TransactionService:
-    def crombobulate(self, entry):
-        if len(entry['transactions']) == 0:
+    def processTransactionOperation(self, entry):
+        if entry['transactions']:
             return None
 
         paid_total = reduce(lambda x, y: x + y, [t['paid'] for t in entry['transactions']])
         owes_total = reduce(lambda x, y: x + y, [t['owes'] for t in entry['transactions']])
 
-        # TODO it's possible that entry['total'] is not an int...
         if paid_total != owes_total or owes_total != entry['total']:
             # TODO should this be an exception?
             return None
@@ -38,8 +37,6 @@ class TransactionService:
             if node['zerosum'] > 0:
                 overpaid.append(node)
 
-        q = []
-        log = []
         bill = self.createBill(entry['label'], entry['group'], entry['creator'])
 
         while len(overpaid) > 0:
@@ -49,15 +46,11 @@ class TransactionService:
             give_to = overpaid.pop()
             take_from = underpaid.pop()
 
-            # log.append(str(give_to['zerosum']) + " vs " + str(take_from['zerosum']))
-
             if give_to['zerosum'] + take_from['zerosum'] >= 0:
-                # log.append("in if")
                 give_to['zerosum'] += take_from['zerosum']
                 owed = abs(take_from['zerosum'])
                 take_from['zerosum'] = 0
             else:
-                # log.append("in else")
                 take_from['zerosum'] += give_to['zerosum']
                 owed = give_to['zerosum']
                 give_to['zerosum'] = 0
@@ -95,14 +88,14 @@ class TransactionService:
         bill = Bill.objects.get(id=bill_id)
         transactions = Transaction.objects.filter(bill=bill)
 
-        billDict = {
+        bill_dict = {
             "bill": model_to_dict(bill),
             'transactions': []
         }
         for t in transactions:
-            billDict['transactions'].append(self.model_to_dict(t))
+            bill_dict['transactions'].append(self.model_to_dict(t))
 
-        return billDict
+        return bill_dict
 
     # TODO Guido pls forgive me
     def model_to_dict(self, transaction):
@@ -124,4 +117,4 @@ class TransactionService:
         transaction = Transaction.objects.get(id=transaction_id)
         transaction.resolved = resolved
         transaction.save()
-        return True
+        return transaction
