@@ -6,9 +6,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 
 from app.group.serializers import GroupIdSerializer, CreateGroupSerializer
-from app.group.services import GroupService, GroupUserService, GroupTransactionService
+from app.group.services import GroupService, GroupUserService
 from app.response.services import ResponseService
-from app.transaction.services import TransactionService
 from app.user.serializers import UserIdSerializer
 
 
