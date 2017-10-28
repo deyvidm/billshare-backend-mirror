@@ -26,6 +26,4 @@ class Transaction(models.Model):
         'user.User',
         related_name='outgoing_pays'
     )
-    resolved = models.BooleanField(
-        default=False
-    )
+    resolved = models.BooleanField()

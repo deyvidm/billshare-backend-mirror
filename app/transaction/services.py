@@ -11,7 +11,7 @@ from app.user.models import User
 
 class TransactionService:
     def processTransactionOperation(self, entry):
-        if entry['transactions']:
+        if not entry['transactions']:
             return None
 
         paid_total = reduce(lambda x, y: x + y, [t['paid'] for t in entry['transactions']])
@@ -55,7 +55,7 @@ class TransactionService:
                 owed = give_to['zerosum']
                 give_to['zerosum'] = 0
 
-            self.createTransaction(bill, entry['group'], take_from['user_id'], give_to['user_id'], owed, entry['currency_code'])
+            self.createTransaction(bill, entry['group'], take_from['user_id'], give_to['user_id'], owed, entry['currency_code'], False)
 
             if give_to['zerosum'] != 0:
                 overpaid.append(give_to)
@@ -72,7 +72,7 @@ class TransactionService:
             creator=User.objects.get(id=creator_id),
         )
 
-    def createTransaction(self, bill, group_id, payer_id, payee_id, amount, currency):
+    def createTransaction(self, bill, group_id, payer_id, payee_id, amount, currency, resolved):
 
         payer = User.objects.get(id=payer_id)
         payee = User.objects.get(id=payee_id)
@@ -81,7 +81,8 @@ class TransactionService:
             group=Group.objects.get(id=group_id),
             payer=payer,
             payee=payee,
-            debt=Money(amount, currency)
+            debt=Money(amount, currency),
+            resolved=resolved
         )
 
     def get(self, bill_id):
