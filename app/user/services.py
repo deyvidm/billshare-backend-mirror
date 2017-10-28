@@ -1,8 +1,8 @@
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
 
-from app.transaction.services import TransactionService
-from app.transaction.models import Transaction
+from app.transaction_line_item.services import TransactionLineItemService
+from app.transaction_line_item.models import TransactionLineItem
 from app.user.models import User
 
 
@@ -32,17 +32,17 @@ class UserService:
 
 class UserTransactionService:
     def get(self, user_id):
-        transaction_service = TransactionService()
-        transactions = Transaction.objects.filter(
+        transaction_line_item_service = TransactionLineItemService()
+        transactions = TransactionLineItem.objects.filter(
             Q(payer=User.objects.get(id=user_id)) |
             Q(payee=User.objects.get(id=user_id))
         )
 
-        bills = sorted(set([t.bill.id for t in transactions]))
+        transaction_ids = sorted(set([t.transaction.id for t in transactions]))
 
         transactions_dict = []
-        for bill_id in bills:
-            transactions = transaction_service.get(bill_id)
-            transactions_dict.append(transactions)
+        for transaction_id in transaction_ids:
+            transaction = transaction_line_item_service.get(transaction_id)
+            transactions_dict.append(transaction)
 
         return transactions_dict

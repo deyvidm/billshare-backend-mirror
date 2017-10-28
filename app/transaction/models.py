@@ -1,29 +1,18 @@
 from django.db import models
 
-from djmoney.models.fields import MoneyField
-
 
 class Transaction(models.Model):
-    label = models.CharField(
+    label = models.TextField(
         max_length=255,
-        blank=True,
-    )
-    bill = models.ForeignKey(
-        "bill.Bill"
+        blank=False,
+        null=False,
     )
     group = models.ForeignKey(
-        "group.Group"
+        'group.Group'
     )
-    debt = MoneyField(
-        max_digits=10,
-        decimal_places=2
+    creator = models.ForeignKey(
+        'user.User'
     )
-    payee = models.ForeignKey(
-        'user.User',
-        related_name='incoming_pays'
+    created_date = models.DateField(
+        auto_now_add=True
     )
-    payer = models.ForeignKey(
-        'user.User',
-        related_name='outgoing_pays'
-    )
-    resolved = models.BooleanField()

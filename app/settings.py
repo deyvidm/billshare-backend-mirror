@@ -57,9 +57,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'corsheaders',
     'djmoney',
-    'app.bill',
     'app.group',
     'app.transaction',
+    'app.transaction_line_item',
     'app.user',
 
 ]
