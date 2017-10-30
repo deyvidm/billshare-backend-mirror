@@ -45,7 +45,7 @@ class TransactionView(View):
             return self.response_service.invalid_id({'error': valid_transaction_create.errors})
 
         try:
-            transaction = self.transaction_service.processTransactionCreate(
+            transaction = self.transaction_service.createTransaction(
                 creator_id=request_data['creator'],
                 group_id=request_data['group'],
                 total=request_data['total'],
@@ -59,7 +59,7 @@ class TransactionView(View):
         if transaction is None:
             return self.response_service.failure({'error': 'Could not process the Transaction'})
 
-        return self.response_service.success(self.transaction_service.get(transaction.id))
+        return self.response_service.success(transaction)
 
     def get(self, request, transaction_id):
         valid_transaction_id = TransactionIdSerializer(data={
