@@ -22,8 +22,6 @@ class TransactionService:
             # TODO should this be an exception?
             return None
 
-        Money(0, currency_code)
-
         overpaid = []
         underpaid = []
 
