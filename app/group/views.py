@@ -83,7 +83,7 @@ class GroupUsersView(View):
     def get(self, request, user_id):
 
         valid_user = UserIdSerializer(data={
-            'id': user_id
+            'user_id': user_id
         })
 
         if valid_user.is_valid() is False:

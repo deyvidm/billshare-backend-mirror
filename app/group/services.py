@@ -1,19 +1,21 @@
 from django.forms import model_to_dict
 from django.core.exceptions import ObjectDoesNotExist
 
-from app.transaction.models import Transaction
 from app.group.models import Group, GroupUser
-from app.transaction_line_item.services import TransactionLineItemService
+
+from app.transaction.models import Transaction
+from app.transaction.services import TransactionService
+
 from app.user.models import User
 from app.user.services import UserService
 
 
 class GroupService:
     def get(self, group_id):
+        user_service = UserService()
+
         group = Group.objects.get(pk=group_id)
         group_users = GroupUser.objects.filter(group=group)
-
-        user_service = UserService()
 
         users = []
         for user in group_users:
@@ -21,9 +23,12 @@ class GroupService:
 
         creator = user_service.get(group.creator.id)
 
-        group_dict = model_to_dict(group)
+        excluded_fields = [
+            'creator',
+        ]
+
+        group_dict = model_to_dict(instance=group, exclude=excluded_fields)
         group_dict['group_users'] = users
-        del(group_dict['creator'])
 
         return group_dict
 
@@ -61,7 +66,7 @@ class GroupService:
         Group.objects.get(pk=group_id).delete()
 
     def get_transactions(self, group_id):
-        transaction_service = TransactionLineItemService()
+        transaction_service = TransactionService()
 
         transactions_dict = []
 

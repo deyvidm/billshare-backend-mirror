@@ -1,5 +1,7 @@
 from rest_framework import serializers
 
+from app.user.models import User
+
 
 class AuthUserSerializer(serializers.Serializer):
     email = serializers.EmailField(required=True, max_length=255, allow_blank=False)
@@ -12,5 +14,9 @@ class UserSerializer(serializers.Serializer):
     last_name = serializers.CharField(required=True, max_length=255)
 
 
-class UserIdSerializer(serializers.Serializer):
-    id = serializers.IntegerField(required=True, max_value=2147483647)
+class UserIdSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['user']
+
+    user = serializers.IntegerField(required=True, source='id')

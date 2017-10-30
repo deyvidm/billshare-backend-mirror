@@ -14,7 +14,7 @@ class UserView(View):
         response_service = ResponseService()
 
         valid_user = UserIdSerializer(data={
-            'id': user_id
+            'user': user_id
         })
 
         if valid_user.is_valid() is False:
@@ -38,16 +38,16 @@ class GetUserIdView(View):
         if auth_service.is_authenticated is False:
             return response_service.failure({'error': 'Not logged in.'})
 
-        return response_service.success({'user_id': request.user.id})
+        return response_service.success({'user': request.user.id})
 
 
-class UserTransactionView(View):
+class UserTransactionsView(View):
 
     response_service = ResponseService()
     user_transaction_service = UserTransactionService()
 
     def get(self, request, user_id):
-        valid_group = UserIdSerializer(data={'id': user_id})
+        valid_group = UserIdSerializer(data={'user': user_id})
         if valid_group.is_valid() is False:
             return self.response_service.invalid_id({'error': valid_group.errors})
 

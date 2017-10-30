@@ -59,9 +59,7 @@ INSTALLED_APPS = [
     'djmoney',
     'app.group',
     'app.transaction',
-    'app.transaction_line_item',
     'app.user',
-
 ]
 
 MIDDLEWARE = [

@@ -17,8 +17,8 @@ from django.conf.urls import url
 
 from app.auth.views import LoginView, LogoutView, CreateUserView
 from app.group.views import GroupView, GroupUsersView, GroupTransactionsView
-from app.transaction_line_item.views import TransactionLineItemView
-from app.user.views import UserView, GetUserIdView, UserTransactionView
+from app.transaction.views import TransactionView
+from app.user.views import UserView, GetUserIdView, UserTransactionsView
 
 from app.url_handlers.views import (
    handler403,
@@ -35,13 +35,13 @@ urlpatterns = [
     url(r'^group/(?P<group_id>\d+)/$', GroupView.as_view()),
     url(r'^group/(?P<group_id>\d+)/transactions/$', GroupTransactionsView.as_view()),
 
-    url(r'^transaction/$', TransactionLineItemView.as_view()),
-    url(r'^transaction/(?P<transaction_id>\d+)/$', TransactionLineItemView.as_view()),
+    url(r'^transaction/$', TransactionView.as_view()),
+    url(r'^transaction/(?P<transaction_id>\d+)/$', TransactionView.as_view()),
 
     url(r'^user/$', GetUserIdView.as_view()),
     url(r'^user/(?P<user_id>\d+)/$', UserView.as_view()),
     url(r'^user/(?P<user_id>\d+)/groups/$', GroupUsersView.as_view()),
-    url(r'^user/(?P<user_id>\d+)/transactions/$', UserTransactionView.as_view()),
+    url(r'^user/(?P<user_id>\d+)/transactions/$', UserTransactionsView.as_view()),
 ]
 
 handle403 = handler403
