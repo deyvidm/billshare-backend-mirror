@@ -3,6 +3,20 @@ from rest_framework import serializers
 from app.transaction.models import Transaction, TransactionLineItem
 
 
+class TransactionLineItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TransactionLineItem
+        fields = '__all__'
+
+
+class TransactionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Transaction
+        fields = '__all__'
+
+    transaction_line_items = TransactionLineItemSerializer(allow_null=False, required=True, many=True)
+
+
 class TransactionLineItemCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = TransactionLineItem

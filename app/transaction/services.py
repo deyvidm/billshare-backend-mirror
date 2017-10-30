@@ -3,9 +3,12 @@ from functools import reduce
 from django.forms import model_to_dict
 from djmoney.money import Money
 
-from app.transaction.models import Transaction
 from app.group.models import Group
+
+from app.transaction.models import Transaction
 from app.transaction.models import TransactionLineItem
+from app.transaction.serializers import TransactionSerializer
+
 from app.user.models import User
 
 
@@ -84,44 +87,20 @@ class TransactionService:
         transaction_line_item.save()
 
         return transaction_line_item
-        
 
     def get(self, transaction_id):
         transaction = Transaction.objects.get(id=transaction_id)
-        transaction_line_items = TransactionLineItem.objects.filter(transaction=transaction)
+        transaction.transaction_line_items = TransactionLineItem.objects.filter(transaction=transaction)
 
-        transaction_dict = {
-            'transaction': model_to_dict(transaction),
-            'transaction_line_items': []
-        }
-
-        for t in transaction_line_items:
-            transaction_dict['transaction_line_items'].append(self.transaction_line_item_model_to_dict(t))
-
-        return transaction_dict
-
-    # TODO Define this in the model or use create a Django Money specific method
-    def transaction_line_item_model_to_dict(self, transaction_line_item):
-        return {
-            'id': transaction_line_item.id,
-            'label': transaction_line_item.label,
-            'transaction': transaction_line_item.transaction_id,
-            'group': transaction_line_item.group_id,
-            'debt': {
-                'amount': transaction_line_item.debt.amount,
-                'currency': transaction_line_item.debt.currency.code
-            },
-            'debtor': transaction_line_item.debtor_id,
-            'creditor': transaction_line_item.creditor_id,
-            'resolved': transaction_line_item.resolved,
-        }
+        serializer = TransactionSerializer(instance=transaction)
+        return serializer.data
 
     def update(self, transaction_id, transaction_line_items):
         transaction = Transaction.objects.get(id=transaction_id)
         transaction.save()
 
         for transaction_line_item in transaction_line_items:
-            transaction_line_item_id = transaction_line_item.pop("transaction_line_item", None)            
+            transaction_line_item_id = transaction_line_item.pop('transaction_line_item', None)
             TransactionLineItem.objects.filter(
                 pk=transaction_line_item_id,
             ).update(**transaction_line_item)
