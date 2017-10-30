@@ -66,8 +66,6 @@ class TransactionView(View):
             'id': transaction_id
         })
 
-        # return self.response_service.success({valid_transaction_id.is_valid(): valid_transaction_id.data})
-
         if valid_transaction_id.is_valid() is False:
             return self.response_service.invalid_id({'serializer error': valid_transaction_id.errors})
 
