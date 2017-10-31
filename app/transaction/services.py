@@ -22,56 +22,43 @@ class TransactionService:
             # TODO Custom Exception
             return None
 
-        overpaid = []
-        underpaid = []
-
-        for transaction_line_item in user_shares:
-            node = {
-                'user_id': transaction_line_item['user'],
-                'zerosum': transaction_line_item['paid'] - transaction_line_item['owes']
-            }
-
-            if node['zerosum'] < 0:
-                underpaid.append(node)
-            if node['zerosum'] > 0:
-                overpaid.append(node)
-
         transaction = Transaction.objects.create(
             label=label,
             group_id=group_id,
             creator_id=creator_id,
         )
 
-        while len(overpaid) > 0:
-            overpaid = sorted(overpaid, key=lambda t: t['zerosum'])
-            underpaid = sorted(underpaid, key=lambda t: t['zerosum'], reverse=True)
+        paid_shares = [{'user': t['user'], 'share': t['paid']} for t in user_shares if t['paid']]
+        owes_shares = [{'user': t['user'], 'share': t['owes']} for t in user_shares if t['owes']]
 
-            give_to = overpaid.pop()
-            take_from = underpaid.pop()
+        while paid_shares and owes_shares:
 
-            if give_to['zerosum'] + take_from['zerosum'] >= 0:
-                give_to['zerosum'] += take_from['zerosum']
-                owed = abs(take_from['zerosum'])
-                take_from['zerosum'] = 0
+            sorted(paid_shares, key=lambda t: t['share'], reverse=True)
+            sorted(owes_shares, key=lambda t: t['share'], reverse=True)
+
+            paid_pair = paid_shares.pop()
+            owes_pair = owes_shares.pop()
+
+            if owes_pair['share'] > paid_pair['share']:
+                debt = paid_pair['share']
+                owes_pair['share'] -= debt
+                owes_shares.append(owes_pair)
             else:
-                take_from['zerosum'] += give_to['zerosum']
-                owed = give_to['zerosum']
-                give_to['zerosum'] = 0
+                debt = owes_pair['share']
+                paid_pair['share'] -= debt
+                if paid_pair['share']:
+                    paid_shares.append(paid_pair)
+
+            resolved = owes_pair['user'] == paid_pair['user']
 
             TransactionLineItem.objects.create(
                 transaction=transaction,
                 group_id=group_id,
-                debtor_id=take_from['user_id'],
-                creditor_id=give_to['user_id'],
-                debt=Money(owed, currency_code),
-                resolved=False,
+                debtor_id=owes_pair['user'],
+                creditor_id=paid_pair['user'],
+                debt=Money(debt, currency_code),
+                resolved=resolved,
             )
-
-            if give_to['zerosum'] != 0:
-                overpaid.append(give_to)
-
-            if take_from['zerosum'] != 0:
-                underpaid.append(take_from)
 
         return self.get(transaction_id=transaction.id)
 
