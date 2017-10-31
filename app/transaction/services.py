@@ -33,8 +33,8 @@ class TransactionService:
 
         while paid_shares and owes_shares:
 
-            sorted(paid_shares, key=lambda t: t['share'], reverse=True)
-            sorted(owes_shares, key=lambda t: t['share'], reverse=True)
+            paid_shares.sort(key=lambda t: t['user'], reverse=True)
+            owes_shares.sort(key=lambda t: t['user'], reverse=True)
 
             paid_pair = paid_shares.pop()
             owes_pair = owes_shares.pop()
