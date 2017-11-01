@@ -36,8 +36,14 @@ class TransactionService:
             paid_shares.sort(key=lambda t: t['user'], reverse=True)
             owes_shares.sort(key=lambda t: t['user'], reverse=True)
 
-            paid_pair = paid_shares.pop()
-            owes_pair = owes_shares.pop()
+            paid_pair, owes_pair = next(((a, b) for a in paid_shares for b in owes_shares if a['user'] == b['user']), ({}, {}))
+
+            if paid_pair and owes_pair:
+                paid_shares = [a for a in paid_shares if a['user'] != paid_pair['user']]
+                owes_shares = [a for a in owes_shares if a['user'] != owes_pair['user']]
+            else:
+                paid_pair = paid_shares.pop()
+                owes_pair = owes_shares.pop()
 
             if owes_pair['share'] > paid_pair['share']:
                 debt = paid_pair['share']
