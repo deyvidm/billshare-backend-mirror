@@ -1,5 +1,57 @@
 # Bill Share API Route Documentation
 
+   * [Bill Share API Route Documentation](#bill-share-api-route-documentation)
+      * [Hosts](#hosts)
+      * [Users](#users)
+         * [GET User by Id](#get-user-by-id)
+            * [Request](#request)
+            * [Success](#success)
+            * [Failure](#failure)
+            * [Example 1](#example-1)
+               * [Request](#request-1)
+               * [Success](#success-1)
+         * [GET Current User](#get-current-user)
+            * [Request](#request-2)
+            * [Success](#success-2)
+            * [Failure](#failure-1)
+            * [Example 1](#example-1-1)
+               * [Request](#request-3)
+               * [Success](#success-3)
+            * [Example 2](#example-2)
+               * [Request](#request-4)
+               * [Failure](#failure-2)
+      * [Auth](#auth)
+         * [Create User](#create-user)
+            * [Request](#request-5)
+            * [Success](#success-4)
+            * [Failure](#failure-3)
+            * [Example 1](#example-1-2)
+               * [Request](#request-6)
+               * [Success](#success-5)
+         * [Login](#login)
+            * [Request](#request-7)
+            * [Success](#success-6)
+            * [Failure](#failure-4)
+            * [Example 1](#example-1-3)
+               * [Request](#request-8)
+               * [Success](#success-7)
+         * [Logout](#logout)
+            * [Request](#request-9)
+            * [Success](#success-8)
+            * [Failure](#failure-5)
+            * [Example 1](#example-1-4)
+               * [Request](#request-10)
+               * [Success](#success-9)
+      * [Groups](#groups)
+         * [GET Group by Id](#get-group-by-id)
+            * [Request](#request-11)
+            * [Success](#success-10)
+            * [Failure](#failure-6)
+            * [Example 1](#example-1-5)
+               * [Request](#request-12)
+               * [Success](#success-11)
+
+
 ## Hosts
 
 ```Bash
@@ -181,7 +233,7 @@ POST /auth/create/
 }
 ```
 
-### Login 
+### Login
 
 #### Request
 ```Bash
