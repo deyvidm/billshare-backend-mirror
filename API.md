@@ -41,15 +41,65 @@
             * [Failure](#failure-5)
             * [Example 1](#example-1-4)
                * [Request](#request-10)
-               * [Success](#success-9)
-      * [Groups](#groups)
-         * [GET Group by Id](#get-group-by-id)
-            * [Request](#request-11)
-            * [Success](#success-10)
-            * [Failure](#failure-6)
-            * [Example 1](#example-1-5)
                * [Request](#request-12)
                * [Success](#success-11)
+         * [Create Group](#create-group)
+            * [Request](#request-13)
+            * [Success](#success-12)
+            * [Failure](#failure-7)
+            * [Example 1](#example-1-6)
+               * [Request](#request-14)
+               * [Success](#success-13)
+         * [DELETE Group](#delete-group)
+            * [Request](#request-15)
+            * [Success](#success-14)
+            * [Failure](#failure-8)
+            * [Example 1](#example-1-7)
+               * [Request](#request-16)
+               * [Success](#success-15)
+         * [GET All Groups Related to a User](#get-all-groups-related-to-a-user)
+            * [Request](#request-17)
+            * [Success](#success-16)
+            * [Failure](#failure-9)
+            * [Example 1](#example-1-8)
+               * [Request](#request-18)
+               * [Success](#success-17)
+      * [Transactions](#transactions)
+         * [Create Transaction](#create-transaction)
+            * [Request](#request-19)
+            * [Success](#success-18)
+            * [Failure](#failure-10)
+            * [Example 1](#example-1-9)
+               * [Request](#request-20)
+               * [Success](#success-19)
+         * [GET Transaction by Id](#get-transaction-by-id)
+            * [Request](#request-21)
+            * [Success](#success-20)
+            * [Failure](#failure-11)
+            * [Example 1](#example-1-10)
+               * [Request](#request-22)
+               * [Success](#success-21)
+         * [UPDATE Transaction, resolve debt](#update-transaction-resolve-debt)
+            * [Request](#request-23)
+            * [Success](#success-22)
+            * [Failure](#failure-12)
+            * [Example 1](#example-1-11)
+               * [Request](#request-24)
+               * [Success](#success-23)
+         * [GET Transactions By User](#get-transactions-by-user)
+            * [Request](#request-25)
+            * [Success](#success-24)
+            * [Failure](#failure-13)
+            * [Example 1](#example-1-12)
+               * [Request](#request-26)
+               * [Success](#success-25)
+         * [GET Transactions by Group](#get-transactions-by-group)
+            * [Request](#request-27)
+            * [Success](#success-26)
+            * [Failure](#failure-14)
+            * [Example 1](#example-1-13)
+               * [Request](#request-28)
+               * [Success](#success-27)
 
 
 ## Hosts
@@ -659,7 +709,26 @@ POST /transaction/
 
 ```Bash
 POST /transaction/
-{}
+{
+  "total": 25.00,
+  "currency_code": "CAD",
+  "label": "Gryphs Last Night",
+  "group": 3,
+  "creator": 4,
+  "user_shares":[
+    {
+      "user": 4,
+      "owes": 10.00,
+      "paid": 15
+    },
+    {
+      "user": 5,
+      "owes": 15,
+      "paid": 10.00
+    }
+  ]
+}
+
 ```
 
 ##### Success
@@ -667,13 +736,55 @@ POST /transaction/
 ```Bash
 200
 {
+  "id": 10,
+  "label": "Gryphs Last Night",
+  "created_date": "2017-10-31T04:58:40.730834Z",
+  "updated_date": "2017-10-31T04:58:40.730861Z",
+  "group": 3,
+  "creator": 4,
+  "transaction_line_items": [
+    {
+      "id": 11,
+      "label": "",
+      "debt_currency": "CAD",
+      "debt": "10.00",
+      "resolved": true,
+      "transaction": 10,
+      "group": 3,
+      "debtor": 4,
+      "creditor": 4
+    },
+    {
+      "id": 12,
+      "label": "",
+      "debt_currency": "CAD",
+      "debt": "5.00",
+      "resolved": false,
+      "transaction": 10,
+      "group": 3,
+      "debtor": 5,
+      "creditor": 4
+    },
+    {
+      "id": 15,
+      "label": "",
+      "debt_currency": "CAD",
+      "debt": "10.00",
+      "resolved": true,
+      "transaction": 10,
+      "group": 3,
+      "debtor": 5,
+      "creditor": 5
+    }
+  ]
 }
 ```
-### GET
+
+### GET Transaction by Id
 
 #### Request
 ```Bash
-GET //
+GET /transaction/<transaction_id>/
 {}
 ```
 
@@ -681,6 +792,26 @@ GET //
 ```Bash
 200
 {
+  "id": <Integer, Required>,
+  "label": <String, Required>,
+  "created_date": <String, Required, DateTimeField or null>,
+  "updated_date": <String, Required, DateTimeField or null>,
+  "group": <Integer, Required>,
+  "creator": <Integer, Required>,
+  "transaction_line_items": [
+    {
+      "id": <Integer, Required>,
+      "label": <String, Optional>,
+      "debt_currency": <Character(3), Required>,
+      "debt": <Decimal, Required>,
+      "resolved": <Boolean, Required>,
+      "transaction": <Integer, Required>,
+      "group": <Integer, Required>,
+      "debtor": <Integer, Required>,
+      "creditor": <Integer, Required>
+    },
+    ...
+  ]
 }
 ```
 
@@ -695,7 +826,7 @@ GET //
 ##### Request
 
 ```Bash
-GET //
+GET /transaction/10/
 {}
 ```
 
@@ -704,20 +835,91 @@ GET //
 ```Bash
 200
 {
+  "id": 10,
+  "label": "Gryphs Last Night",
+  "created_date": "2017-10-31T04:58:40.730834Z",
+  "updated_date": "2017-10-31T04:58:40.730861Z",
+  "group": 3,
+  "creator": 4,
+  "transaction_line_items": [
+    {
+      "id": 11,
+      "label": "",
+      "debt_currency": "CAD",
+      "debt": "10.00",
+      "resolved": true,
+      "transaction": 10,
+      "group": 3,
+      "debtor": 4,
+      "creditor": 4
+    },
+    {
+      "id": 12,
+      "label": "",
+      "debt_currency": "CAD",
+      "debt": "5.00",
+      "resolved": false,
+      "transaction": 10,
+      "group": 3,
+      "debtor": 5,
+      "creditor": 4
+    },
+    {
+      "id": 15,
+      "label": "",
+      "debt_currency": "CAD",
+      "debt": "10.00",
+      "resolved": true,
+      "transaction": 10,
+      "group": 3,
+      "debtor": 5,
+      "creditor": 5
+    }
+  ]
 }
 ```
-### GET
+
+### UPDATE Transaction, resolve debt
 
 #### Request
 ```Bash
-GET //
-{}
+PUT /transaction/
+{
+  "id": <Integer, Required>,
+  "transaction_line_items": [
+    {
+      "id": <Integer, Required>,
+      "resolved": <Boolean, Required>
+    },
+    ...
+  ]
+}
 ```
 
 #### Success
 ```Bash
 200
 {
+  "id": <Integer, Required>,
+  "label": <String, Required>,
+  "created_date": <String, Required, DateTimeField or null>,
+  "updated_date": <String, Required, DateTimeField or null>,
+  "group": <Integer, Required>,
+  "creator": <Integer, Required>,
+  "transaction_line_items": [
+    {
+      "id": <Integer, Required>,
+      "label": <String, Optional>,
+      "debt_currency": <Character(3), Required>,
+      "debt": <Decimal, Required>,
+      "resolved": <Boolean, Required>,
+      "transaction": <Integer, Required>,
+      "group": <Integer, Required>,
+      "debtor": <Integer, Required>,
+      "creditor": <Integer, Required>
+    },
+    ...
+  ]
 }
 ```
 
@@ -732,8 +934,16 @@ GET //
 ##### Request
 
 ```Bash
-GET //
-{}
+PUT /transaction/
+{
+  "transaction": 10,
+  "transaction_line_items": [
+    {
+      "transaction_line_item": 12,
+      "resolved": true
+    }
+  ]
+}
 ```
 
 ##### Success
@@ -741,21 +951,86 @@ GET //
 ```Bash
 200
 {
+  "id": 10,
+  "label": "Gryphs Last Night",
+  "created_date": "2017-10-31T04:58:40.730834Z",
+  "updated_date": "2017-10-31T04:58:40.730861Z",
+  "group": 3,
+  "creator": 4,
+  "transaction_line_items": [
+    {
+      "id": 11,
+      "label": "",
+      "debt_currency": "CAD",
+      "debt": "10.00",
+      "resolved": true,
+      "transaction": 10,
+      "group": 3,
+      "debtor": 4,
+      "creditor": 4
+    },
+    {
+      "id": 12,
+      "label": "",
+      "debt_currency": "CAD",
+      "debt": "5.00",
+      "resolved": true,
+      "transaction": 10,
+      "group": 3,
+      "debtor": 5,
+      "creditor": 4
+    },
+    {
+      "id": 15,
+      "label": "",
+      "debt_currency": "CAD",
+      "debt": "10.00",
+      "resolved": true,
+      "transaction": 10,
+      "group": 3,
+      "debtor": 5,
+      "creditor": 5
+    }
+  ]
 }
 ```
-### GET
+
+### GET Transactions By User
 
 #### Request
 ```Bash
-GET //
+GET /user/<user_id>/transactions/
 {}
 ```
 
 #### Success
 ```Bash
 200
-{
-}
+[
+  {
+    "id": <Integer, Required>,
+    "label": <String, Required>,
+    "created_date": <String, Required, DateTimeField or null>,
+    "updated_date": <String, Required, DateTimeField or null>,
+    "group": <Integer, Required>,
+    "creator": <Integer, Required>,
+    "transaction_line_items": [
+      {
+        "id": <Integer, Required>,
+        "label": <String, Optional>,
+        "debt_currency": <Character(3), Required>,
+        "debt": <Decimal, Required>,
+        "resolved": <Boolean, Required>,
+        "transaction": <Integer, Required>,
+        "group": <Integer, Required>,
+        "debtor": <Integer, Required>,
+        "creditor": <Integer, Required>
+      },
+      ...
+    ]
+  },
+  ...
+] 
 ```
 
 #### Failure
@@ -769,7 +1044,7 @@ GET //
 ##### Request
 
 ```Bash
-GET //
+GET /user/4/transactions/
 {}
 ```
 
@@ -777,22 +1052,89 @@ GET //
 
 ```Bash
 200
-{
-}
+[
+  {
+    "id": 10,
+    "label": "Gryphs Last Night",
+    "created_date": "2017-10-31T04:58:40.730834Z",
+    "updated_date": "2017-10-31T04:58:40.730861Z",
+    "group": 3,
+    "creator": 4,
+    "transaction_line_items": [
+      {
+        "id": 11,
+        "label": "",
+        "debt_currency": "CAD",
+        "debt": "10.00",
+        "resolved": true,
+        "transaction": 10,
+        "group": 3,
+        "debtor": 4,
+        "creditor": 4
+      },
+      {
+        "id": 12,
+        "label": "",
+        "debt_currency": "CAD",
+        "debt": "5.00",
+        "resolved": true,
+        "transaction": 10,
+        "group": 3,
+        "debtor": 5,
+        "creditor": 4
+      },
+      {
+        "id": 15,
+        "label": "",
+        "debt_currency": "CAD",
+        "debt": "10.00",
+        "resolved": true,
+        "transaction": 10,
+        "group": 3,
+        "debtor": 5,
+        "creditor": 5
+      }
+    ]
+  }
+]
 ```
-### GET
+
+### GET Transactions by Group
 
 #### Request
 ```Bash
-GET //
+GET /group/<group_id>/transactions/
 {}
 ```
 
 #### Success
 ```Bash
 200
-{
-}
+[
+  {
+    "id": <Integer, Required>,
+    "label": <String, Required>,
+    "created_date": <String, Required, DateTimeField or null>,
+    "updated_date": <String, Required, DateTimeField or null>,
+    "group": <Integer, Required>,
+    "creator": <Integer, Required>,
+    "transaction_line_items": [
+      {
+        "id": <Integer, Required>,
+        "label": <String, Optional>,
+        "debt_currency": <Character(3), Required>,
+        "debt": <Decimal, Required>,
+        "resolved": <Boolean, Required>,
+        "transaction": <Integer, Required>,
+        "group": <Integer, Required>,
+        "debtor": <Integer, Required>,
+        "creditor": <Integer, Required>
+      },
+      ...
+    ]
+  },
+  ...
+] 
 ```
 
 #### Failure
@@ -806,7 +1148,7 @@ GET //
 ##### Request
 
 ```Bash
-GET //
+GET /group/4/transactions/
 {}
 ```
 
@@ -814,154 +1156,49 @@ GET //
 
 ```Bash
 200
-{
-}
-```
-### GET
-
-#### Request
-```Bash
-GET //
-{}
-```
-
-#### Success
-```Bash
-200
-{
-}
-```
-
-#### Failure
-```Bash
-404
-{}
-```
-
-#### Example 1
-
-##### Request
-
-```Bash
-GET //
-{}
-```
-
-##### Success
-
-```Bash
-200
-{
-}
-```
-### GET
-
-#### Request
-```Bash
-GET //
-{}
-```
-
-#### Success
-```Bash
-200
-{
-}
-```
-
-#### Failure
-```Bash
-404
-{}
-```
-
-#### Example 1
-
-##### Request
-
-```Bash
-GET //
-{}
-```
-
-##### Success
-
-```Bash
-200
-{
-}
-```
-### GET
-
-#### Request
-```Bash
-GET //
-{}
-```
-
-#### Success
-```Bash
-200
-{
-}
-```
-
-#### Failure
-```Bash
-404
-{}
-```
-
-#### Example 1
-
-##### Request
-
-```Bash
-GET //
-{}
-```
-
-##### Success
-
-```Bash
-200
-{
-}
-```
-### GET
-
-#### Request
-```Bash
-GET //
-{}
-```
-
-#### Success
-```Bash
-200
-{
-}
-```
-
-#### Failure
-```Bash
-404
-{}
-```
-
-#### Example 1
-
-##### Request
-
-```Bash
-GET //
-{}
-```
-
-##### Success
-
-```Bash
-200
-{
-}
+[
+  {
+    "id": 10,
+    "label": "Gryphs Last Night",
+    "created_date": "2017-10-31T04:58:40.730834Z",
+    "updated_date": "2017-10-31T04:58:40.730861Z",
+    "group": 3,
+    "creator": 4,
+    "transaction_line_items": [
+      {
+        "id": 11,
+        "label": "",
+        "debt_currency": "CAD",
+        "debt": "10.00",
+        "resolved": true,
+        "transaction": 10,
+        "group": 3,
+        "debtor": 4,
+        "creditor": 4
+      },
+      {
+        "id": 12,
+        "label": "",
+        "debt_currency": "CAD",
+        "debt": "5.00",
+        "resolved": true,
+        "transaction": 10,
+        "group": 3,
+        "debtor": 5,
+        "creditor": 4
+      },
+      {
+        "id": 15,
+        "label": "",
+        "debt_currency": "CAD",
+        "debt": "10.00",
+        "resolved": true,
+        "transaction": 10,
+        "group": 3,
+        "debtor": 5,
+        "creditor": 5
+      }
+    ]
+  }
+]
 ```
