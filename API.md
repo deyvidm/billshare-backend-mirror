@@ -323,7 +323,7 @@ POST /auth/login/
 ##### Request
 
 ```Bash
-GET //
+POST /auth/login/
 {
   "email": "person@example.com",
   "password": "hunter2"
