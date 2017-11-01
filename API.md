@@ -43,6 +43,7 @@
                * [Request](#request-10)
                * [Request](#request-12)
                * [Success](#success-11)
+      * [Groups](#groups)
          * [Create Group](#create-group)
             * [Request](#request-13)
             * [Success](#success-12)
