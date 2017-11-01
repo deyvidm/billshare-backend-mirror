@@ -13,9 +13,8 @@ http://billshare.io:3000
 
 #### Request
 ```Bash
-/user/<user_id>/
+GET /user/<user_id>/
 
-GET
 {}
 ```
 
@@ -35,9 +34,8 @@ GET
 
 ###### Request
 ```Bash
-/user/1/
+GET /user/1/
 
-GET
 {}
 ```
 
