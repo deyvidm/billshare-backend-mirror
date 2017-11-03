@@ -1,0 +1,25 @@
+# Issue <#>
+
+## Description
+
+## Testing
+
+## Deployment Steps
+
+1. Merge
+2. Delete Branch
+3. Closes Issue <#>
+4. Deploy
+
+```Bash
+git checkout master && git pull
+make prod-connect && make prod-deploy
+```
+
+5. Migrations
+
+```Bash
+make prod-manage migrate
+```
+
+> make prod-disconnect or close terminal session
