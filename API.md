@@ -1337,6 +1337,7 @@ GET /currency/
 ##### Success
 
 > The "base" currency is always 1, default being CAD
+
 > The default date is always "today" in UTC Time
 
 ```Bash
