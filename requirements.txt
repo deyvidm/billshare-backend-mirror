@@ -1,6 +1,7 @@
 Django==1.11.5
-psycopg2
-uwsgi
-djangorestframework
 django-cors-headers
 django-money
+djangorestframework
+psycopg2
+requests
+uwsgi
