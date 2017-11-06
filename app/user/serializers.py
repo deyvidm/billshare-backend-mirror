@@ -15,8 +15,8 @@ class UserSerializer(serializers.Serializer):
 
 
 class UserIdSerializer(serializers.ModelSerializer):
+    id = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
+
     class Meta:
         model = User
-        fields = ['user']
-
-    user = serializers.IntegerField(required=True, source='id')
+        fields = ['id']

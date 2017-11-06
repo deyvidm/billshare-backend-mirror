@@ -77,7 +77,7 @@ class GroupService:
         return transactions_dict
 
 
-class GroupUserService:
+class UserGroupService:
     def get(self, user_id):
         group_service = GroupService()
         user = User.objects.get(id=user_id)

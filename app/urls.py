@@ -16,9 +16,9 @@ Including another URLconf
 from django.conf.urls import url
 
 from app.auth.views import LoginView, LogoutView, CreateUserView
-from app.group.views import GroupView, GroupUsersView, GroupTransactionsView
+from app.group.views import GroupView, GroupTransactionsView
 from app.transaction.views import TransactionView
-from app.user.views import UserView, GetUserIdView, UserTransactionsView
+from app.user.views import UserView, GetUserIdView, UserTransactionsView, UserGroupsView
 
 from app.url_handlers.views import (
    handler403,
@@ -40,7 +40,7 @@ urlpatterns = [
 
     url(r'^user/$', GetUserIdView.as_view()),
     url(r'^user/(?P<user_id>\d+)/$', UserView.as_view()),
-    url(r'^user/(?P<user_id>\d+)/groups/$', GroupUsersView.as_view()),
+    url(r'^user/(?P<user_id>\d+)/groups/$', UserGroupsView.as_view()),
     url(r'^user/(?P<user_id>\d+)/transactions/$', UserTransactionsView.as_view()),
 ]
 

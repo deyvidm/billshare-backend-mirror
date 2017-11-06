@@ -1,12 +1,18 @@
 from rest_framework import serializers
 
+from app.group.models import Group
+
 
 class EmailSerializer(serializers.Serializer):
     email = serializers.EmailField(required=True, max_length=255, allow_blank=False)
 
 
-class GroupIdSerializer(serializers.Serializer):
-    id = serializers.IntegerField(required=True, max_value=2147483647)
+class GroupIdSerializer(serializers.ModelSerializer):
+    id = serializers.PrimaryKeyRelatedField(queryset=Group.objects.all())
+
+    class Meta:
+        model = Group
+        fields = ['id']
 
 
 class GroupLabelSerializer(serializers.Serializer):
