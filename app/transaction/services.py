@@ -1,3 +1,4 @@
+from django.utils import timezone
 from django.db.models import Q
 
 from functools import reduce
@@ -68,6 +69,10 @@ class TransactionService:
                 resolved=resolved,
             )
 
+        Group.objects.filter(
+            pk=transaction.group_id,
+        ).update(updated_date=timezone.now())
+
         return self.get(transaction_id=transaction.id)
 
     def get(self, transaction_id):
@@ -80,6 +85,10 @@ class TransactionService:
     def update(self, transaction_id, transaction_line_items):
         transaction = Transaction.objects.get(id=transaction_id)
         transaction.save()
+
+        Group.objects.filter(
+            pk=transaction.group_id,
+        ).update(updated_date=timezone.now())
 
         for transaction_line_item in transaction_line_items:
             transaction_line_item_id = transaction_line_item.pop('transaction_line_item', None)

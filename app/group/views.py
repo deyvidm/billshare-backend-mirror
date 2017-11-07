@@ -24,10 +24,7 @@ class GroupView(View):
         if valid_group.is_valid() is False:
             return self.response_service.invalid_id({'error': valid_group.errors})
 
-        try:
-            group = self.group_service.get(group_id)
-        except Exception as e:
-            return self.response_service.service_exception({'error': str(e)})
+        group = self.group_service.get(group_id)
 
         return self.response_service.success(group)
 

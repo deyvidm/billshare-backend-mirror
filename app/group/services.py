@@ -67,11 +67,7 @@ class GroupService:
 class UserGroupService:
     def get(self, user_id):
         group_service = GroupService()
-        user = User.objects.get(id=user_id)
-        group_objects = GroupUser.objects.filter(user=user).values('group')
-        groups_formatted = []
 
-        for group in group_objects:
-            groups_formatted.append(group_service.get(group['group']))
+        groups = Group.objects.filter(_group_users__user=user_id).order_by('-updated_date')
 
-        return groups_formatted
+        return [group_service.get(group_id=group.id) for group in groups]

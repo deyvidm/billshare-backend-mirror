@@ -29,6 +29,12 @@ class ResponseService():
             'status': 404,
         })
 
+    def invalid_object(self, response):
+        return self.__prod_sanitization({
+            'data': response,
+            'status': 404,
+        })
+
     def service_exception(self, response={}):
         return self.__prod_sanitization({
             'data': response,
