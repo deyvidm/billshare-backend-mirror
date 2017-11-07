@@ -13,6 +13,10 @@ class Group(models.Model):
         on_delete=models.CASCADE
     )
 
+    updated_date = models.DateTimeField(
+        auto_now_add=True
+    )
+
 
 class GroupUser(models.Model):
     group = models.ForeignKey(

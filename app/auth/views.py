@@ -71,26 +71,21 @@ class CreateUserView(View):
         except ValueError as e:
             return response_service.json_decode_exception({'error': str(e)})
 
-        email = request_data.get('email', None)
-        password = request_data.get('password', None)
-        first_name = request_data.get('first_name', None)
-        last_name = request_data.get('last_name', None)
-
-        valid_user = UserSerializer(data={
-            'email': email,
-            'password': password,
-            'first_name': first_name,
-            'last_name': last_name,
-        })
+        valid_user = UserSerializer(data=request_data)
 
         if valid_user.is_valid() is False:
             return response_service.invalid_id({'error': valid_user.errors})
 
-        if user_service.email_exists(email=email):
+        if user_service.email_exists(email=request_data['email']):
             return response_service.failure({'error': 'Email already exists'})
 
         try:
-            user = auth_service.create_user(email=email, password=password, first_name=first_name, last_name=last_name)
+            user = auth_service.create_user(
+                email=request_data['email'],
+                password=request_data['password'],
+                first_name=request_data['first_name'],
+                last_name=request_data['last_name'],
+            )
         except Exception as e:
             return response_service.service_exception({'error': str(e)})
 

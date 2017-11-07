@@ -8,15 +8,29 @@ class AuthUserSerializer(serializers.Serializer):
     password = serializers.CharField(required=True, max_length=128, allow_blank=False)
 
 
-class UserSerializer(serializers.Serializer):
-    email = serializers.EmailField(required=True, max_length=255, allow_blank=False)
-    first_name = serializers.CharField(required=True, max_length=255)
-    last_name = serializers.CharField(required=True, max_length=255)
-
-
 class UserIdSerializer(serializers.ModelSerializer):
     id = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
 
     class Meta:
         model = User
         fields = ['id']
+
+
+class UserSerializer(serializers.ModelSerializer):
+    last_login = serializers.DateTimeField(required=False)
+
+    class Meta:
+        model = User
+        fields = [
+            'id',
+            'email',
+            'first_name',
+            'last_login',
+            'last_name',
+            'password',
+        ]
+
+    def to_representation(self, instance):
+        data = super(UserSerializer, self).to_representation(instance)
+        data.pop('password')
+        return data

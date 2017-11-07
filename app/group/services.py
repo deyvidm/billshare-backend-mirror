@@ -2,35 +2,22 @@ from django.forms import model_to_dict
 from django.core.exceptions import ObjectDoesNotExist
 
 from app.group.models import Group, GroupUser
+from app.group.serializers import GroupSerializer
 
 from app.transaction.models import Transaction
 from app.transaction.services import TransactionService
 
 from app.user.models import User
-from app.user.services import UserService
 
 
 class GroupService:
     def get(self, group_id):
-        user_service = UserService()
-
         group = Group.objects.get(pk=group_id)
-        group_users = GroupUser.objects.filter(group=group)
+        group.group_users = [User.objects.get(pk=group_user.user.id) for group_user in GroupUser.objects.filter(group_id=group_id)]
 
-        users = []
-        for user in group_users:
-            users.append(user_service.get(user.user_id))
+        serializer = GroupSerializer(instance=group)
 
-        creator = user_service.get(group.creator.id)
-
-        excluded_fields = [
-            'creator',
-        ]
-
-        group_dict = model_to_dict(instance=group, exclude=excluded_fields)
-        group_dict['group_users'] = users
-
-        return group_dict
+        return serializer.data
 
     def create(self, label, creator_email, user_emails):
         try:
