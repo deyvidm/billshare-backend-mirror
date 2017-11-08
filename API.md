@@ -101,7 +101,21 @@
             * [Example 1](#example-1-13)
                * [Request](#request-28)
                * [Success](#success-27)
-
+      * [Currency](#currency)
+         * [GET List of Available Currency Codes](#get-list-of-available-currency-codes)
+            * [Request](#request-29)
+            * [Success](#success-28)
+            * [Failure](#failure-15)
+            * [Example 1](#example-1-14)
+               * [Request](#request-30)
+               * [Success](#success-29)
+         * [GET Dictionary of Available Currency Codes and their Foreign Exchange Rates](#get-dictionary-of-available-currency-codes-and-their-foreign-exchange-rates)
+            * [Request](#request-31)
+            * [Success](#success-30)
+            * [Failure](#failure-16)
+            * [Example 1](#example-1-15)
+               * [Request](#request-32)
+               * [Success](#success-31)
 
 ## Hosts
 
@@ -1202,4 +1216,164 @@ GET /group/4/transactions/
     ]
   }
 ]
+```
+
+## Currency
+
+### GET List of Available Currency Codes
+
+#### Request
+
+```Bash
+GET /currency/codes/
+{}
+```
+
+#### Success
+
+```Bash
+200
+[
+  <Character(3), Required>,
+  ...
+]
+```
+
+#### Failure
+
+```Bash
+404
+{
+  'error': 'Could not provide currency codes'
+}
+```
+
+#### Example 1
+
+##### Request
+
+```Bash
+GET /currency/codes/
+{}
+```
+
+##### Success
+
+```Bash
+200
+[
+  "AUD",
+  "BGN",
+  "BRL",
+  "CAD",
+  "CHF",
+  "CNY",
+  "CZK",
+  "DKK",
+  "EUR",
+  "GBP",
+  "HKD",
+  "HRK",
+  "HUF",
+  "IDR",
+  "ILS",
+  "INR",
+  "JPY",
+  "KRW",
+  "MXN",
+  "MYR",
+  "NOK",
+  "NZD",
+  "PHP",
+  "PLN",
+  "RON",
+  "RUB",
+  "SEK",
+  "SGD",
+  "THB",
+  "TRY",
+  "USD",
+  "ZAR"
+]
+```
+
+### GET Dictionary of Available Currency Codes and their Foreign Exchange Rates
+
+#### Request
+
+```Bash
+GET /currency/
+{}
+```
+
+#### Success
+
+```Bash
+200
+{
+  <Character(3), Required>: <Decimal, Required>,
+  ...
+}
+```
+
+#### Failure
+
+```Bash
+404
+{
+  'error': 'Could not provide currency codes'
+}
+```
+
+#### Example 1
+
+##### Request
+
+```Bash
+GET /currency/
+{}
+```
+
+##### Success
+
+> The "base" currency is always 1, default being CAD
+
+> The default date is always "today" in UTC Time
+
+```Bash
+200
+{
+  "AUD": 1.0239,
+  "BGN": 1.3188,
+  "BRL": 2.5632,
+  "CAD": 1,
+  "CHF": 0.78456,
+  "CNY": 5.2057,
+  "CZK": 17.297,
+  "DKK": 5.0183,
+  "EUR": 0.67431,
+  "GBP": 0.59962,
+  "HKD": 6.133,
+  "HRK": 5.0799,
+  "HUF": 209.23,
+  "IDR": 10606,
+  "ILS": 2.7538,
+  "INR": 50.717,
+  "JPY": 89.562,
+  "KRW": 875.72,
+  "MXN": 14.931,
+  "MYR": 3.3265,
+  "NOK": 6.3953,
+  "NZD": 1.1326,
+  "PHP": 40.205,
+  "PLN": 2.8579,
+  "RON": 3.1003,
+  "RUB": 46.052,
+  "SEK": 6.6023,
+  "SGD": 1.069,
+  "THB": 26.034,
+  "TRY": 3.0295,
+  "USD": 0.78604,
+  "ZAR": 11.105
+}
 ```
