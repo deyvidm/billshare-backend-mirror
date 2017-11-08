@@ -679,6 +679,8 @@ POST /transaction/
   "label": <String, Required>,
   "created_date": <String, Required, DateTimeField or null>,
   "updated_date": <String, Required, DateTimeField or null>,
+  "total_currency": <Character(3), Required>,
+  "total": <String, Required>,
   "group": <Integer, Required>,
   "creator": <Integer, Required>,
   "transaction_line_items": [
@@ -686,7 +688,7 @@ POST /transaction/
       "id": <Integer, Required>,
       "label": <String, Optional>,
       "debt_currency": <Character(3), Required>,
-      "debt": <Decimal, Required>,
+      "debt": <String, Required>,
       "resolved": <Boolean, Required>,
       "transaction": <Integer, Required>,
       "group": <Integer, Required>,
@@ -797,6 +799,8 @@ GET /transaction/<transaction_id>/
   "label": <String, Required>,
   "created_date": <String, Required, DateTimeField or null>,
   "updated_date": <String, Required, DateTimeField or null>,
+  "total_currency": <Character(3), Required>,
+  "total": <String, Required>,
   "group": <Integer, Required>,
   "creator": <Integer, Required>,
   "transaction_line_items": [
@@ -804,7 +808,7 @@ GET /transaction/<transaction_id>/
       "id": <Integer, Required>,
       "label": <String, Optional>,
       "debt_currency": <Character(3), Required>,
-      "debt": <Decimal, Required>,
+      "debt": <String, Required>,
       "resolved": <Boolean, Required>,
       "transaction": <Integer, Required>,
       "group": <Integer, Required>,
@@ -840,6 +844,8 @@ GET /transaction/10/
   "label": "Gryphs Last Night",
   "created_date": "2017-10-31T04:58:40.730834Z",
   "updated_date": "2017-10-31T04:58:40.730861Z",
+  "total_currency": "CAD"",
+  "total": "25.00",
   "group": 3,
   "creator": 4,
   "transaction_line_items": [
@@ -905,6 +911,8 @@ PUT /transaction/
   "label": <String, Required>,
   "created_date": <String, Required, DateTimeField or null>,
   "updated_date": <String, Required, DateTimeField or null>,
+  "total_currency": <Character(3), Required>,
+  "total": <String, Required>,
   "group": <Integer, Required>,
   "creator": <Integer, Required>,
   "transaction_line_items": [
@@ -912,7 +920,7 @@ PUT /transaction/
       "id": <Integer, Required>,
       "label": <String, Optional>,
       "debt_currency": <Character(3), Required>,
-      "debt": <Decimal, Required>,
+      "debt": <String, Required>,
       "resolved": <Boolean, Required>,
       "transaction": <Integer, Required>,
       "group": <Integer, Required>,
@@ -956,6 +964,8 @@ PUT /transaction/
   "label": "Gryphs Last Night",
   "created_date": "2017-10-31T04:58:40.730834Z",
   "updated_date": "2017-10-31T04:58:40.730861Z",
+  "total_currency": "CAD",
+  "total": "25.00",
   "group": 3,
   "creator": 4,
   "transaction_line_items": [
@@ -1013,6 +1023,8 @@ GET /user/<user_id>/transactions/
     "label": <String, Required>,
     "created_date": <String, Required, DateTimeField or null>,
     "updated_date": <String, Required, DateTimeField or null>,
+    "total_currency": <Character(3), Required>,
+    "total": <String, Required>,
     "group": <Integer, Required>,
     "creator": <Integer, Required>,
     "transaction_line_items": [
@@ -1020,7 +1032,7 @@ GET /user/<user_id>/transactions/
         "id": <Integer, Required>,
         "label": <String, Optional>,
         "debt_currency": <Character(3), Required>,
-        "debt": <Decimal, Required>,
+        "debt": <String, Required>,
         "resolved": <Boolean, Required>,
         "transaction": <Integer, Required>,
         "group": <Integer, Required>,
@@ -1059,6 +1071,8 @@ GET /user/4/transactions/
     "label": "Gryphs Last Night",
     "created_date": "2017-10-31T04:58:40.730834Z",
     "updated_date": "2017-10-31T04:58:40.730861Z",
+    "total_currency": "CAD",
+    "total": "25.00",
     "group": 3,
     "creator": 4,
     "transaction_line_items": [
@@ -1117,6 +1131,8 @@ GET /group/<group_id>/transactions/
     "label": <String, Required>,
     "created_date": <String, Required, DateTimeField or null>,
     "updated_date": <String, Required, DateTimeField or null>,
+    "total_currency": <Character(3), Required>,
+    "total": <String, Required>,
     "group": <Integer, Required>,
     "creator": <Integer, Required>,
     "transaction_line_items": [
@@ -1124,7 +1140,7 @@ GET /group/<group_id>/transactions/
         "id": <Integer, Required>,
         "label": <String, Optional>,
         "debt_currency": <Character(3), Required>,
-        "debt": <Decimal, Required>,
+        "debt": <String, Required>,
         "resolved": <Boolean, Required>,
         "transaction": <Integer, Required>,
         "group": <Integer, Required>,
@@ -1163,6 +1179,8 @@ GET /group/4/transactions/
     "label": "Gryphs Last Night",
     "created_date": "2017-10-31T04:58:40.730834Z",
     "updated_date": "2017-10-31T04:58:40.730861Z",
+    "total_currency": "CAD"
+    "total": "25.00"
     "group": 3,
     "creator": 4,
     "transaction_line_items": [

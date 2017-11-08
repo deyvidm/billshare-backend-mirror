@@ -21,6 +21,10 @@ class Transaction(models.Model):
     updated_date = models.DateTimeField(
         auto_now=True
     )
+    total = MoneyField(
+        max_digits=10,
+        decimal_places=2
+    )
 
 
 class TransactionLineItem(models.Model):
