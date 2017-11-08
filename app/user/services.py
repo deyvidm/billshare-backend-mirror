@@ -45,4 +45,5 @@ class UserTransactionService:
             transaction = transaction_line_item_service.get(transaction_id)
             transactions_dict.append(transaction)
 
+        transactions_dict = sorted(transactions_dict, key=lambda t: t['updated_date'], reverse=True)
         return transactions_dict
