@@ -31,22 +31,24 @@ class FixerCurrencyService:
         if historical_date:
             self.historical_date = historical_date
 
-    def get_currency_code_rates(self):
-        response = requests.get(self.fixer_url + self.historical_date + '?' + 'base=' + self.base_currency)
+    def get_currency_code_rates(self, base_currency=None):
+        base_currency = base_currency or self.base_currency
+
+        response = requests.get(self.fixer_url + self.historical_date + '?' + 'base=' + base_currency)
 
         if response.status_code == 200:
             currency_codes = response.json().get('rates', None)
 
             if currency_codes:
-                currency_codes[self.base_currency] = 1.0
+                currency_codes[base_currency] = 1.0
                 accepted_currency_codes = self.currency_service.get_currency_codes()
 
                 return {currency_code: currency_codes[currency_code] for currency_code in accepted_currency_codes if currency_code in currency_codes}
 
         return None
 
-    def get_currency_codes(self):
-        currency_codes = self.get_currency_code_rates()
+    def get_currency_codes(self, base_currency=None):
+        currency_codes = self.get_currency_code_rates(base_currency)
 
         if currency_codes:
             return list(currency_codes)
