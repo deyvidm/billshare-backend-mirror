@@ -1,5 +1,6 @@
-import sys
 from functools import reduce
+from decimal import *
+import sys
 
 from djmoney.money import Money
 
@@ -9,6 +10,38 @@ from app.transaction.serializers import TransactionSerializer
 
 
 class TransactionService:
+    def to_dec(self, x):
+        return Decimal("%.2lf" % x)
+
+    def dec_add(self, x, y):
+        return self.to_dec(x) + self.to_dec(y)
+
+    def dec_sub(self, x, y):
+        return self.to_dec(x) - self.to_dec(y)
+
+    def equalize_queue(self, transaction_line_item_queue, total):
+        debt_total = reduce(lambda x, y: self.dec_add(x, y), [t['debt'] for t in transaction_line_item_queue])
+        diff = self.dec_sub(debt_total, total)
+        print("diff: " + str(diff), sys.stderr)
+        if Decimal(diff) != Decimal(0):
+            print("got in", sys.stderr)
+            adj = self.to_dec(0.01)
+            if diff > 0:
+                adj = self.to_dec(-1) * adj
+
+            while self.to_dec(diff) != self.to_dec(0):
+                print("diff: %.2lf" % diff, sys.stderr)
+                transaction_line_item_queue.sort(key=lambda t: t['debt'], reverse=False)
+                transaction_line_item_queue[0]['debt'] = self.dec_add(transaction_line_item_queue[0]['debt'], adj)
+                diff = self.dec_add(diff, adj)
+
+        return transaction_line_item_queue
+
+    def create_transaction_line_items_in_queue(self, transaction_line_item_queue, currency_code):
+        for t in transaction_line_item_queue:
+            t['debt'] = Money(t['debt'], currency_code)
+            TransactionLineItem.objects.create(**t)
+
     def createTransaction(self, creator_id, group_id, user_shares, total, currency_code, label, split_type):
 
         paid_total = reduce(lambda x, y: x + y, [t['paid'] for t in user_shares])
@@ -18,7 +51,7 @@ class TransactionService:
             if paid_total != owes_total or owes_total != 100:
                 # TODO Custom Exception
                 return None
-        elif split_type == "dollar":
+        elif split_type == "money":
             if paid_total != owes_total or owes_total != total:
                 # TODO Custom Exception
                 return None
@@ -32,14 +65,14 @@ class TransactionService:
             total=Money(total, currency_code)
         )
 
-        print("test", sys.stderr)
-        if split_type == "dollar":
+        if split_type == "money":
             paid_shares = [{'user': t['user'], 'share': t['paid']} for t in user_shares if t['paid']]
             owes_shares = [{'user': t['user'], 'share': t['owes']} for t in user_shares if t['owes']]
         if split_type == "percent":
             paid_shares = [{'user': t['user'], 'share': t['paid'] * total / 100} for t in user_shares if t['paid']]
             owes_shares = [{'user': t['user'], 'share': t['owes'] * total / 100} for t in user_shares if t['owes']]
 
+        transaction_line_item_queue = []
         while paid_shares and owes_shares:
 
             paid_shares.sort(key=lambda t: t['user'], reverse=True)
@@ -68,15 +101,19 @@ class TransactionService:
             resolved = owes_pair['user'] == paid_pair['user']
 
             percentage = debt / total * 100
-            TransactionLineItem.objects.create(
-                transaction=transaction,
-                group_id=group_id,
-                debtor_id=owes_pair['user'],
-                creditor_id=paid_pair['user'],
-                debt=Money(debt, currency_code),
-                resolved=resolved,
-                percentage=percentage
-            )
+            # TransactionLineItem.objects.create(
+            transaction_line_item_queue.append({
+                'transaction': transaction,
+                'group_id': group_id,
+                'debtor_id': owes_pair['user'],
+                'creditor_id': paid_pair['user'],
+                'debt': debt,
+                'resolved': resolved,
+                'percentage': percentage
+            })
+
+        transaction_line_item_queue = self.equalize_queue(transaction_line_item_queue, total)
+        self.create_transaction_line_items_in_queue(transaction_line_item_queue, currency_code)
 
         return self.get(transaction_id=transaction.id)
 
