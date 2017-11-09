@@ -24,7 +24,8 @@ DJANGO_ENV_PROD = 'prod'
 DJANGO_ENV_DEV = 'dev'
 
 # Usable settings constant
-DJANGO_ENV_IS_PROD = DJANGO_ENV == DJANGO_ENV_PROD
+DJANGO_ENV_IS_PROD = False
+# DJANGO_ENV == DJANGO_ENV_PROD
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = environ['DJANGO_SECRET_KEY']
@@ -39,6 +40,10 @@ if DJANGO_ENV == DJANGO_ENV_PROD:
     ALLOWED_HOSTS = [
         'billshare.io',
         'billshare.io:3000',
+        'localhost',
+        'localhost:3000',
+        '127.0.0.1',
+        '127.0.0.1:3000',
     ]
 elif DJANGO_ENV == DJANGO_ENV_DEV:
     ALLOWED_HOSTS = [
