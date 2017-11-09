@@ -39,6 +39,11 @@ class TransactionLineItem(models.Model):
     group = models.ForeignKey(
         'group.Group',
     )
+    percentage = models.DecimalField(
+        decimal_places=2,
+        max_digits=4,
+        default=0
+    )
     debt = MoneyField(
         max_digits=10,
         decimal_places=2,

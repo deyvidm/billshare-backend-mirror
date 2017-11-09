@@ -1,25 +1,28 @@
+import sys
 from functools import reduce
 
-from django.forms import model_to_dict
 from djmoney.money import Money
-
-from app.group.models import Group
 
 from app.transaction.models import Transaction
 from app.transaction.models import TransactionLineItem
 from app.transaction.serializers import TransactionSerializer
 
-from app.user.models import User
-
 
 class TransactionService:
-    def createTransaction(self, creator_id, group_id, user_shares, total, currency_code, label):
+    def createTransaction(self, creator_id, group_id, user_shares, total, currency_code, label, split_type):
 
         paid_total = reduce(lambda x, y: x + y, [t['paid'] for t in user_shares])
         owes_total = reduce(lambda x, y: x + y, [t['owes'] for t in user_shares])
 
-        if paid_total != owes_total or owes_total != total:
-            # TODO Custom Exception
+        if split_type == "percent":
+            if paid_total != owes_total or owes_total != 100:
+                # TODO Custom Exception
+                return None
+        elif split_type == "dollar":
+            if paid_total != owes_total or owes_total != total:
+                # TODO Custom Exception
+                return None
+        else:
             return None
 
         transaction = Transaction.objects.create(
@@ -29,8 +32,13 @@ class TransactionService:
             total=Money(total, currency_code)
         )
 
-        paid_shares = [{'user': t['user'], 'share': t['paid']} for t in user_shares if t['paid']]
-        owes_shares = [{'user': t['user'], 'share': t['owes']} for t in user_shares if t['owes']]
+        print("test", sys.stderr)
+        if split_type == "dollar":
+            paid_shares = [{'user': t['user'], 'share': t['paid']} for t in user_shares if t['paid']]
+            owes_shares = [{'user': t['user'], 'share': t['owes']} for t in user_shares if t['owes']]
+        if split_type == "percent":
+            paid_shares = [{'user': t['user'], 'share': t['paid'] * total / 100} for t in user_shares if t['paid']]
+            owes_shares = [{'user': t['user'], 'share': t['owes'] * total / 100} for t in user_shares if t['owes']]
 
         while paid_shares and owes_shares:
 
@@ -52,12 +60,14 @@ class TransactionService:
                 owes_shares.append(owes_pair)
             else:
                 debt = owes_pair['share']
+
                 paid_pair['share'] -= debt
                 if paid_pair['share']:
                     paid_shares.append(paid_pair)
 
             resolved = owes_pair['user'] == paid_pair['user']
 
+            percentage = debt / total * 100
             TransactionLineItem.objects.create(
                 transaction=transaction,
                 group_id=group_id,
@@ -65,6 +75,7 @@ class TransactionService:
                 creditor_id=paid_pair['user'],
                 debt=Money(debt, currency_code),
                 resolved=resolved,
+                percentage=percentage
             )
 
         return self.get(transaction_id=transaction.id)

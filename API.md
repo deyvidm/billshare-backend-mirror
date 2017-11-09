@@ -659,6 +659,7 @@ POST /transaction/
   "label": <String, Required>,
   "group": <Integer, Required>,
   "creator": <Integer, Required>,
+  "split_type" <String, Required>,
   "user_shares":[
     {
       "user": <Integer, Required>,
@@ -669,6 +670,7 @@ POST /transaction/
     ...
   ]
 }
+split_type can be one of `percent` or `dollar`
 ```
 
 #### Success
@@ -687,6 +689,7 @@ POST /transaction/
     {
       "id": <Integer, Required>,
       "label": <String, Optional>,
+      "percentage": <String, Required>,
       "debt_currency": <Character(3), Required>,
       "debt": <String, Required>,
       "resolved": <Boolean, Required>,
@@ -718,6 +721,7 @@ POST /transaction/
   "label": "Gryphs Last Night",
   "group": 3,
   "creator": 4,
+  "split_type": "dollar",
   "user_shares":[
     {
       "user": 4,
@@ -749,6 +753,7 @@ POST /transaction/
     {
       "id": 11,
       "label": "",
+      "percentage": "40.00",
       "debt_currency": "CAD",
       "debt": "10.00",
       "resolved": true,
@@ -760,6 +765,7 @@ POST /transaction/
     {
       "id": 12,
       "label": "",
+      "percentage": "20.00",
       "debt_currency": "CAD",
       "debt": "5.00",
       "resolved": false,
@@ -771,6 +777,7 @@ POST /transaction/
     {
       "id": 15,
       "label": "",
+      "percentage": "40.00",
       "debt_currency": "CAD",
       "debt": "10.00",
       "resolved": true,
@@ -803,10 +810,12 @@ GET /transaction/<transaction_id>/
   "total": <String, Required>,
   "group": <Integer, Required>,
   "creator": <Integer, Required>,
+  "split_type" <String, Required>,
   "transaction_line_items": [
     {
       "id": <Integer, Required>,
       "label": <String, Optional>,
+      "percentage" <String, Required>,
       "debt_currency": <Character(3), Required>,
       "debt": <String, Required>,
       "resolved": <Boolean, Required>,
@@ -848,10 +857,12 @@ GET /transaction/10/
   "total": "25.00",
   "group": 3,
   "creator": 4,
+  "split_type": "dollar",
   "transaction_line_items": [
     {
       "id": 11,
       "label": "",
+      "percentage": "40.00",
       "debt_currency": "CAD",
       "debt": "10.00",
       "resolved": true,
@@ -863,6 +874,7 @@ GET /transaction/10/
     {
       "id": 12,
       "label": "",
+      "percentage": "20.00",
       "debt_currency": "CAD",
       "debt": "5.00",
       "resolved": false,
@@ -874,6 +886,7 @@ GET /transaction/10/
     {
       "id": 15,
       "label": "",
+      "percentage": "40.00",
       "debt_currency": "CAD",
       "debt": "10.00",
       "resolved": true,
