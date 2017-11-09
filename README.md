@@ -56,6 +56,10 @@ make manage <command1> <command2> ...
 # make manage makemigrations
 # make manage dbshell
 # make manage shell
+
+# Nuke the database
+# make manage flush
+# make manage sqlmigrate app_name 0001
 ```
 
 ### Check Django Security

@@ -1,6 +1,5 @@
 from functools import reduce
 from decimal import *
-import sys
 
 from djmoney.money import Money
 
@@ -22,15 +21,11 @@ class TransactionService:
     def equalize_queue(self, transaction_line_item_queue, total):
         debt_total = reduce(lambda x, y: self.dec_add(x, y), [t['debt'] for t in transaction_line_item_queue])
         diff = self.dec_sub(debt_total, total)
-        print("diff: " + str(diff), sys.stderr)
         if Decimal(diff) != Decimal(0):
-            print("got in", sys.stderr)
             adj = self.to_dec(0.01)
             if diff > 0:
                 adj = self.to_dec(-1) * adj
-
             while self.to_dec(diff) != self.to_dec(0):
-                print("diff: %.2lf" % diff, sys.stderr)
                 transaction_line_item_queue.sort(key=lambda t: t['debt'], reverse=False)
                 transaction_line_item_queue[0]['debt'] = self.dec_add(transaction_line_item_queue[0]['debt'], adj)
                 diff = self.dec_add(diff, adj)
@@ -42,7 +37,7 @@ class TransactionService:
             t['debt'] = Money(t['debt'], currency_code)
             TransactionLineItem.objects.create(**t)
 
-    def createTransaction(self, creator_id, group_id, user_shares, total, currency_code, label, split_type):
+    def create_transaction(self, creator_id, group_id, user_shares, total, currency_code, label, split_type):
 
         paid_total = reduce(lambda x, y: x + y, [t['paid'] for t in user_shares])
         owes_total = reduce(lambda x, y: x + y, [t['owes'] for t in user_shares])

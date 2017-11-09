@@ -45,7 +45,7 @@ class TransactionView(View):
             return self.response_service.invalid_id({'error': valid_transaction_create.errors})
 
         try:
-            transaction = self.transaction_service.createTransaction(
+            transaction = self.transaction_service.create_transaction(
                 creator_id=request_data['creator'],
                 group_id=request_data['group'],
                 total=request_data['total'],
