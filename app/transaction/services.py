@@ -43,7 +43,7 @@ class TransactionService:
         owes_total = reduce(lambda x, y: x + y, [t['owes'] for t in user_shares])
 
         if split_type == "percent":
-            if paid_total != owes_total or owes_total != 100:
+            if paid_total != total or owes_total != 100:
                 # TODO Custom Exception
                 return None
         elif split_type == "money":
@@ -60,11 +60,9 @@ class TransactionService:
             total=Money(total, currency_code)
         )
 
-        if split_type == "money":
-            paid_shares = [{'user': t['user'], 'share': t['paid']} for t in user_shares if t['paid']]
-            owes_shares = [{'user': t['user'], 'share': t['owes']} for t in user_shares if t['owes']]
+        paid_shares = [{'user': t['user'], 'share': t['paid']} for t in user_shares if t['paid']]
+        owes_shares = [{'user': t['user'], 'share': t['owes']} for t in user_shares if t['owes']]
         if split_type == "percent":
-            paid_shares = [{'user': t['user'], 'share': t['paid'] * total / 100} for t in user_shares if t['paid']]
             owes_shares = [{'user': t['user'], 'share': t['owes'] * total / 100} for t in user_shares if t['owes']]
 
         transaction_line_item_queue = []
