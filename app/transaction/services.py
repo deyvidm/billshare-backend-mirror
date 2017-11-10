@@ -23,7 +23,7 @@ class TransactionService:
         diff = self.dec_sub(debt_total, total)
         if diff != self.to_dec(0):
             adjustment = self.to_dec(0.01)
-            if diff > 0:
+            if diff > self.to_dec(0):
                 adjustment = self.to_dec(-1) * adjustment
             counter = 0
             while diff != self.to_dec(0):
