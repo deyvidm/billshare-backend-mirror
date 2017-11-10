@@ -684,7 +684,7 @@ POST /transaction/
     ...
   ]
 }
-split_type can be one of `percent` or `dollar`
+split_type can be one of `percent` or `money`
 ```
 
 #### Success
@@ -735,7 +735,7 @@ POST /transaction/
   "label": "Gryphs Last Night",
   "group": 3,
   "creator": 4,
-  "split_type": "dollar",
+  "split_type": "money",
   "user_shares":[
     {
       "user": 4,
@@ -871,7 +871,7 @@ GET /transaction/10/
   "total": "25.00",
   "group": 3,
   "creator": 4,
-  "split_type": "dollar",
+  "split_type": "money",
   "transaction_line_items": [
     {
       "id": 11,
@@ -919,10 +919,10 @@ GET /transaction/10/
 ```Bash
 PUT /transaction/
 {
-  "id": <Integer, Required>,
+  "transaction": <Integer, Required>,
   "transaction_line_items": [
     {
-      "id": <Integer, Required>,
+      "transaction_line_item": <Integer, Required>,
       "resolved": <Boolean, Required>
     },
     ...

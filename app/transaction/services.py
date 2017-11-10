@@ -1,5 +1,5 @@
 from functools import reduce
-from decimal import *
+from decimal import Decimal
 
 from djmoney.money import Money
 
@@ -18,21 +18,22 @@ class TransactionService:
     def dec_sub(self, x, y):
         return self.to_dec(x) - self.to_dec(y)
 
-    def equalize_queue(self, transaction_line_item_queue, total):
+    def equalize_transaction_line_items_list(self, transaction_line_item_queue, total):
         debt_total = reduce(lambda x, y: self.dec_add(x, y), [t['debt'] for t in transaction_line_item_queue])
         diff = self.dec_sub(debt_total, total)
-        if Decimal(diff) != Decimal(0):
-            adj = self.to_dec(0.01)
+        if diff != self.to_dec(0):
+            adjustment = self.to_dec(0.01)
             if diff > 0:
-                adj = self.to_dec(-1) * adj
-            while self.to_dec(diff) != self.to_dec(0):
-                transaction_line_item_queue.sort(key=lambda t: t['debt'], reverse=False)
-                transaction_line_item_queue[0]['debt'] = self.dec_add(transaction_line_item_queue[0]['debt'], adj)
-                diff = self.dec_add(diff, adj)
+                adjustment = self.to_dec(-1) * adjustment
+            counter = 0
+            while diff != self.to_dec(0):
+                transaction_line_item_queue[counter]['debt'] = self.dec_add(transaction_line_item_queue[counter]['debt'], adjustment)
+                diff = self.dec_add(diff, adjustment)
+                counter += 1
 
         return transaction_line_item_queue
 
-    def create_transaction_line_items_in_queue(self, transaction_line_item_queue, currency_code):
+    def create_transaction_line_items(self, transaction_line_item_queue, currency_code):
         for t in transaction_line_item_queue:
             t['debt'] = Money(t['debt'], currency_code)
             TransactionLineItem.objects.create(**t)
@@ -94,7 +95,6 @@ class TransactionService:
             resolved = owes_pair['user'] == paid_pair['user']
 
             percentage = debt / total * 100
-            # TransactionLineItem.objects.create(
             transaction_line_item_queue.append({
                 'transaction': transaction,
                 'group_id': group_id,
@@ -105,8 +105,8 @@ class TransactionService:
                 'percentage': percentage
             })
 
-        transaction_line_item_queue = self.equalize_queue(transaction_line_item_queue, total)
-        self.create_transaction_line_items_in_queue(transaction_line_item_queue, currency_code)
+        transaction_line_item_queue = self.equalize_transaction_line_items_list(transaction_line_item_queue, total)
+        self.create_transaction_line_items(transaction_line_item_queue, currency_code)
 
         return self.get(transaction_id=transaction.id)
 
