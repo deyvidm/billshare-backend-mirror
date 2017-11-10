@@ -804,6 +804,120 @@ POST /transaction/
 }
 ```
 
+
+#### Example 2
+
+##### Request
+
+```Bash
+POST /transaction/
+{
+	"total": 6.77,
+	"currency_code": "CAD",
+	"label": "testLabel",
+	"group": 1,
+	"creator": 1,
+	"split_type": "percent",
+	"user_shares":[
+		{
+			"user": 1,
+			"owes": 33.33,
+			"paid": 6.00
+		},
+		{
+			"user": 2,
+			"owes": 33.33,
+			"paid": 0.71
+		},
+		{
+			"user": 3,
+			"owes": 33.34,
+			"paid": 0.06
+		}
+	]
+}
+
+```
+
+##### Success
+
+```Bash
+200
+{
+    "id": 81,
+    "transaction_line_items": [
+        {
+            "id": 113,
+            "label": "",
+            "percentage": "0.89",
+            "debt_currency": "CAD",
+            "debt": "0.05",
+            "resolved": true,
+            "transaction": 81,
+            "group": 1,
+            "debtor": 3,
+            "creditor": 3
+        },
+        {
+            "id": 114,
+            "label": "",
+            "percentage": "10.49",
+            "debt_currency": "CAD",
+            "debt": "0.71",
+            "resolved": true,
+            "transaction": 81,
+            "group": 1,
+            "debtor": 2,
+            "creditor": 2
+        },
+        {
+            "id": 115,
+            "label": "",
+            "percentage": "33.33",
+            "debt_currency": "CAD",
+            "debt": "2.26",
+            "resolved": true,
+            "transaction": 81,
+            "group": 1,
+            "debtor": 1,
+            "creditor": 1
+        },
+        {
+            "id": 116,
+            "label": "",
+            "percentage": "22.84",
+            "debt_currency": "CAD",
+            "debt": "1.55",
+            "resolved": false,
+            "transaction": 81,
+            "group": 1,
+            "debtor": 2,
+            "creditor": 1
+        },
+        {
+            "id": 117,
+            "label": "",
+            "percentage": "32.45",
+            "debt_currency": "CAD",
+            "debt": "2.20",
+            "resolved": false,
+            "transaction": 81,
+            "group": 1,
+            "debtor": 3,
+            "creditor": 1
+        }
+    ],
+    "label": "testLabel",
+    "created_date": "2017-11-10T02:44:55.108601Z",
+    "updated_date": "2017-11-10T02:44:55.108660Z",
+    "total_currency": "CAD",
+    "total": "6.77",
+    "group": 1,
+    "creator": 1
+}
+```
+
+
 ### GET Transaction by Id
 
 #### Request
