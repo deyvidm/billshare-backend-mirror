@@ -62,3 +62,6 @@ target/
 
 #intelliJ IDEs
 .idea
+
+# Sockets
+*.sock

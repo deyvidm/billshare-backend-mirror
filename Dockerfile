@@ -9,6 +9,7 @@ RUN apt-get update && \
         postgresql-contrib \
         nginx \
         supervisor
+
 RUN pip install -r requirements.txt
 
 RUN echo "daemon off;" >> /etc/nginx/nginx.conf
