@@ -1,18 +1,36 @@
 version: "3"
 
 services:
+  nginx:
+    ports:
+      - "3000:3000"
+    build:
+      context: .
+      dockerfile: config/nginx/Dockerfile
+    stdin_open: true
+    tty: true
+    volumes:
+      - sharedvolume:/billshare/
   db:
     image: postgres
+    env_file:
+      - env/postgres.env
   app:
     restart: always
     env_file:
       - env/dev.env
-    build: .
+    build:
+      context: .
+      dockerfile: config/app/Dockerfile
     stdin_open: true
     tty: true
     volumes:
       - .:/app
-    ports:
-      - "3000:3000"
     depends_on:
+      - nginx
       - db
+    volumes:
+      - sharedvolume:/billshare/
+
+volumes:
+  sharedvolume: {}

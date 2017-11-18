@@ -149,8 +149,11 @@ make prod-stop
 # docker-compose up -d
 make prod-up
 
-# SSH to server
+# SSH into Prod Container
 make prod-ssh
+
+# SSH into Prod Server
+make prod-server-ssh
 ```
 
 ## Development Environment Debugging
