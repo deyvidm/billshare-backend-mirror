@@ -24,13 +24,12 @@ services:
       dockerfile: config/app/Dockerfile
     stdin_open: true
     tty: true
-    volumes:
-      - .:/app
     depends_on:
       - nginx
       - db
     volumes:
       - sharedvolume:/billshare/
+      - .:/app
 
 volumes:
   sharedvolume: {}

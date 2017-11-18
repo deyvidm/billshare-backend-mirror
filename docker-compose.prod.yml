@@ -20,8 +20,6 @@ services:
     build:
       context: .
       dockerfile: config/app/Dockerfile
-    volumes:
-      - .:/app
     depends_on:
       - nginx
       - db

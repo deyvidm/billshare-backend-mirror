@@ -8,8 +8,7 @@ RUN apt-get update && \
         python3 \
         python3-pip \
         postgresql \
-        postgresql-contrib \
-        supervisor
+        postgresql-contrib
 
 RUN cd /usr/local/bin && \
     ln -s /usr/bin/python3 python && \
@@ -17,8 +16,8 @@ RUN cd /usr/local/bin && \
 
 RUN pip install -r requirements.txt
 
-COPY config/app/supervisor-app.conf /etc/supervisor/conf.d/
-COPY config/app/uwsgi.ini /app/uwsgi.ini
+RUN mkdir -p /app/config/app/
+COPY config/app/uwsgi.ini /app/config/app/uwsgi.ini
 ADD app /app/app
 
-CMD ["supervisord", "-n"]
+CMD ["uwsgi", "--ini", "/app/config/app/uwsgi.ini"]
