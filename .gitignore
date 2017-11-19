@@ -65,3 +65,5 @@ target/
 
 # Sockets
 *.sock
+
+letsencrypt
