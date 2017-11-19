@@ -16,7 +16,7 @@ from app.user.models import User
 
 
 class TransactionService:
-    def createTransaction(self, creator_id, group_id, user_shares, total, currency_code, label):
+    def create_transaction(self, creator_id, group_id, user_shares, total, currency_code, label):
 
         paid_total = reduce(lambda x, y: x + y, [t['paid'] for t in user_shares])
         owes_total = reduce(lambda x, y: x + y, [t['owes'] for t in user_shares])
