@@ -52,6 +52,7 @@ class TransactionView(View):
                 currency_code=request_data['currency_code'],
                 label=request_data['label'],
                 user_shares=request_data['user_shares'],
+                split_type=request_data['split_type']
             )
         except Exception as e:
             return self.response_service.service_exception({'error': str(e)})
