@@ -57,7 +57,7 @@ class GroupService:
 
         transactions_dict = []
 
-        for transaction in Transaction.objects.filter(group=Group.objects.get(id=group_id)):
+        for transaction in Transaction.objects.filter(group=Group.objects.get(id=group_id)).order_by('-updated_date'):
             transactions = transaction_service.get(transaction.id)
             transactions_dict.append(transactions)
 

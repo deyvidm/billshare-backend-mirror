@@ -21,6 +21,10 @@ class Transaction(models.Model):
     updated_date = models.DateTimeField(
         auto_now=True
     )
+    total = MoneyField(
+        max_digits=10,
+        decimal_places=2
+    )
 
 
 class TransactionLineItem(models.Model):
@@ -34,6 +38,11 @@ class TransactionLineItem(models.Model):
     )
     group = models.ForeignKey(
         'group.Group',
+    )
+    percentage = models.DecimalField(
+        decimal_places=2,
+        max_digits=4,
+        default=0
     )
     debt = MoneyField(
         max_digits=10,

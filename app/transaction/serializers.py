@@ -35,6 +35,7 @@ class TransactionCreateSerializer(serializers.ModelSerializer):
     currency_code = serializers.CharField(required=True, max_length=3, min_length=3)
     total = serializers.DecimalField(required=True, decimal_places=2, max_digits=100)
     user_shares = TransactionLineItemCreateSerializer(allow_null=False, required=True, many=True)
+    split_type = serializers.ChoiceField(choices=['percent', 'money'])
 
     class Meta:
         model = Transaction
@@ -45,6 +46,7 @@ class TransactionCreateSerializer(serializers.ModelSerializer):
             'label',
             'total',
             'user_shares',
+            'split_type'
         ]
 
 
