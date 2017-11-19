@@ -6,6 +6,10 @@ from decimal import Decimal
 
 from djmoney.money import Money
 
+from app.user.models import User
+
+from app.group.models import Group
+
 from app.transaction.models import Transaction
 from app.transaction.models import TransactionLineItem
 from app.transaction.serializers import TransactionSerializer
