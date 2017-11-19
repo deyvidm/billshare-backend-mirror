@@ -2,6 +2,7 @@ FROM ubuntu:latest
 RUN mkdir /app
 WORKDIR /app
 ADD requirements.txt /app/
+ADD manage.py /app/
 
 RUN apt-get update && \
     apt-get install -y \
@@ -16,8 +17,7 @@ RUN cd /usr/local/bin && \
 
 RUN pip install -r requirements.txt
 
-RUN mkdir -p /app/config/app/
-COPY config/app/uwsgi.ini /app/config/app/uwsgi.ini
+COPY config/app/prod/uwsgi.ini /app/uwsgi.ini
 ADD app /app/app
 
-CMD ["uwsgi", "--ini", "/app/config/app/uwsgi.ini"]
+CMD ["uwsgi", "--ini", "/app/uwsgi.ini"]

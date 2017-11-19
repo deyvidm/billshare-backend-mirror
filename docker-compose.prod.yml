@@ -3,10 +3,11 @@ version: "3"
 services:
   nginx:
     ports:
-      - "3000:3000"
+      - "80:80"
+      - "443:443"
     build:
       context: .
-      dockerfile: config/nginx/Dockerfile
+      dockerfile: config/nginx/prod/Dockerfile
     volumes:
       - sharedvolume:/billshare/
   db:
@@ -19,7 +20,7 @@ services:
       - env/prod.env
     build:
       context: .
-      dockerfile: config/app/Dockerfile
+      dockerfile: config/app/prod/Dockerfile
     depends_on:
       - nginx
       - db

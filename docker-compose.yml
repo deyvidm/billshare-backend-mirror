@@ -6,7 +6,7 @@ services:
       - "3000:3000"
     build:
       context: .
-      dockerfile: config/nginx/Dockerfile
+      dockerfile: config/nginx/dev/Dockerfile
     stdin_open: true
     tty: true
     volumes:
@@ -21,7 +21,7 @@ services:
       - env/dev.env
     build:
       context: .
-      dockerfile: config/app/Dockerfile
+      dockerfile: config/app/dev/Dockerfile
     stdin_open: true
     tty: true
     depends_on:
