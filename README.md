@@ -91,6 +91,8 @@ npm install -g machine-share
 make machine-import
 ```
 
+3. Get `letsencrypt` directory from DevOps and put it in the root of the project
+
 ### Connecting to Production
 
 * Set local environment to \<machine-name\>
@@ -149,8 +151,11 @@ make prod-stop
 # docker-compose up -d
 make prod-up
 
-# SSH to server
+# SSH into Prod Container
 make prod-ssh
+
+# SSH into Prod Server
+make prod-server-ssh
 ```
 
 ## Development Environment Debugging

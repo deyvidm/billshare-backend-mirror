@@ -19,9 +19,9 @@ class LoginView(View):
         response_service = ResponseService()
 
         try:
-            request_data = json.loads(request.body)
+            request_data = json.loads(request.body.decode('utf-8'))
         except ValueError as e:
-            return self.response_service.json_decode_exception({'error': str(e)})
+            return response_service.json_decode_exception({'error': str(e)})
 
         email = request_data.get('email', None)
         password = request_data.get('password', None)
@@ -67,7 +67,7 @@ class CreateUserView(View):
         user_service = UserService()
 
         try:
-            request_data = json.loads(request.body)
+            request_data = json.loads(request.body.decode('utf-8'))
         except ValueError as e:
             return response_service.json_decode_exception({'error': str(e)})
 

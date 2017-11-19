@@ -38,8 +38,7 @@ elif DJANGO_ENV == DJANGO_ENV_DEV:
 
 if DJANGO_ENV == DJANGO_ENV_PROD:
     ALLOWED_HOSTS = [
-        'billshare.io',
-        'billshare.io:3000',
+        'api.billshare.io',
         'localhost',
         'localhost:3000',
         '127.0.0.1',

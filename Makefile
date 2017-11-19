@@ -23,7 +23,7 @@ DJANGO_PROJECT_NAME := app
 DJANGO_DOCKER_CONTAINER_NAME := app
 DATABASE_DOCKER_CONTAINER_NAME := db
 
-DOCKER_NAME := billshare
+DOCKER_NAME := billshare-api
 DOCKER_COMPOSE_PRODUCTION_YAML := docker-compose.prod.yml
 
 DOCKER_COMPOSE_COMMAND := docker-compose
@@ -78,7 +78,7 @@ machine-import:
 machine-export:
 	machine-export $(DOCKER_NAME)
 
-.PHONY: prod-connect prod-create prod-ssh prod-disconnect prod-deploy prod-stop prod-build prod-start prod-up prod-create-digital-ocean prod-recreate prod-manage
+.PHONY: prod-connect prod-create prod-ssh prod-disconnect prod-deploy prod-stop prod-build prod-start prod-up prod-create-digital-ocean prod-recreate prod-manage prod-server-ssh
 
 prod-deploy: prod-build prod-up prod-start
 
@@ -118,5 +118,8 @@ prod-create-digital-ocean:
 prod-destroy:
 	$(DOCKER_MACHINE_COMMAND) rm $(DOCKER_NAME)
 
-prod-ssh:
+prod-server-ssh:
 	$(DOCKER_MACHINE_COMMAND) ssh $(DOCKER_NAME)
+
+prod-ssh:
+	$(DOCKER_COMPOSE_COMMAND) -f $(DOCKER_COMPOSE_PRODUCTION_YAML) exec app bash

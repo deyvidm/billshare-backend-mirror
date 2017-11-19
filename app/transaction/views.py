@@ -18,7 +18,7 @@ class TransactionView(View):
 
     def put(self, request):
         try:
-            request_data = json.loads(request.body)
+            request_data = json.loads(request.body.decode('utf-8'))
         except ValueError as e:
             return self.response_service.json_decode_exception({'error': str(e)})
 
@@ -36,7 +36,7 @@ class TransactionView(View):
 
     def post(self, request):
         try:
-            request_data = json.loads(request.body)
+            request_data = json.loads(request.body.decode('utf-8'))
         except ValueError as e:
             return self.response_service.json_decode_exception({'error': str(e)})
 

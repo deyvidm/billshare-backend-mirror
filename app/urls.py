@@ -17,7 +17,7 @@ from django.conf.urls import url
 
 from app.auth.views import LoginView, LogoutView, CreateUserView
 from app.currency.views import CurrencyCodesView, CurrencyView
-from app.group.views import GroupView, GroupUsersView, GroupTransactionsView
+from app.group.views import GroupView, GroupTransactionsView
 from app.transaction.views import TransactionView
 from app.user.views import UserView, GetUserIdView, UserTransactionsView, UserGroupsView
 
