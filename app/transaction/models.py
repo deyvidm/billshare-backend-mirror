@@ -4,6 +4,10 @@ from djmoney.models.fields import MoneyField
 
 
 class Transaction(models.Model):
+    SPLIT_TYPE_CHOICES = (
+        ('percent', 'percent'),
+        ('money', 'money'),
+    )
     label = models.TextField(
         max_length=255,
         blank=False,
@@ -24,6 +28,12 @@ class Transaction(models.Model):
     total = MoneyField(
         max_digits=10,
         decimal_places=2
+    )
+    split_type = models.CharField(
+        max_length=255,
+        blank=False,
+        null=False,
+        choices=SPLIT_TYPE_CHOICES
     )
 
 

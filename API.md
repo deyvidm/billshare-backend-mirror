@@ -120,7 +120,7 @@
 ## Hosts
 
 ```Bash
-http://billshare.io:3000
+https://api.billshare.io
 127.0.0.1:3000
 ```
 

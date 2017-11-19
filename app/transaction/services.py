@@ -65,7 +65,8 @@ class TransactionService:
             label=label,
             group_id=group_id,
             creator_id=creator_id,
-            total=Money(total, currency_code)
+            total=Money(total, currency_code),
+            split_type=split_type,
         )
 
         paid_shares = [{'user': t['user'], 'share': t['paid']} for t in user_shares if t['paid']]
