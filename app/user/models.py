@@ -11,20 +11,6 @@ class UserManager(BaseUserManager):
         user.save()
         return user
 
-    def get_user(self, query_params):
-        included_fields = None
-        excluded_fields = [
-            'password',
-        ]
-
-        user = self.get(**query_params)
-
-        return model_to_dict(
-            user,
-            fields=included_fields,
-            exclude=excluded_fields,
-        )
-
     def update_user(self, query_params, update_params):
         excluded_fields = [
             'password',

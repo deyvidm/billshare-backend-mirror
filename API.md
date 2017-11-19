@@ -631,6 +631,8 @@ GET /user/4/groups/
 
 ##### Success
 
+> `group_users` list is ordered by most recent `updated_date`, which is updated when transactions are created or updated, and when groups are updated
+
 ```Bash
 200
 
