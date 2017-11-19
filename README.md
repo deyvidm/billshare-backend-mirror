@@ -91,6 +91,8 @@ npm install -g machine-share
 make machine-import
 ```
 
+3. Get `letsencrypt` directory from DevOps and put it in the root of the project
+
 ### Connecting to Production
 
 * Set local environment to \<machine-name\>
