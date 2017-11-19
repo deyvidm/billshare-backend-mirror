@@ -1,3 +1,6 @@
+from django.utils import timezone
+from django.db.models import Q
+
 from functools import reduce
 from decimal import Decimal
 
@@ -108,6 +111,10 @@ class TransactionService:
         transaction_line_item_queue = self.equalize_transaction_line_items_list(transaction_line_item_queue, total)
         self.create_transaction_line_items(transaction_line_item_queue, currency_code)
 
+        Group.objects.filter(
+            pk=transaction.group_id,
+        ).update(updated_date=timezone.now())
+
         return self.get(transaction_id=transaction.id)
 
     def get(self, transaction_id):
@@ -121,6 +128,10 @@ class TransactionService:
         transaction = Transaction.objects.get(id=transaction_id)
         transaction.save()
 
+        Group.objects.filter(
+            pk=transaction.group_id,
+        ).update(updated_date=timezone.now())
+
         for transaction_line_item in transaction_line_items:
             transaction_line_item_id = transaction_line_item.pop('transaction_line_item', None)
             TransactionLineItem.objects.filter(
@@ -128,3 +139,21 @@ class TransactionService:
             ).update(**transaction_line_item)
 
         return self.get(transaction_id=transaction_id)
+
+
+class UserTransactionService:
+    def get(self, user_id):
+        transaction_line_item_service = TransactionService()
+        transactions = TransactionLineItem.objects.filter(
+            Q(debtor=User.objects.get(id=user_id)) |
+            Q(creditor=User.objects.get(id=user_id))
+        )
+
+        transaction_ids = sorted(set([t.transaction.id for t in transactions]))
+
+        transactions_dict = []
+        for transaction_id in transaction_ids:
+            transaction = transaction_line_item_service.get(transaction_id)
+            transactions_dict.append(transaction)
+
+        return transactions_dict

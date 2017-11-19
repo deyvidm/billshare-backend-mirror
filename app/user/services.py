@@ -1,15 +1,16 @@
 from django.core.exceptions import ObjectDoesNotExist
-from django.db.models import Q
 
-from app.transaction.services import TransactionService
-from app.transaction.models import TransactionLineItem
 from app.user.models import User
+from app.user.serializers import UserSerializer
 
 
 class UserService:
 
     def get(self, user_id):
-        return User.objects.get_user({'pk': user_id})
+        user = User.objects.get(pk=user_id)
+        serializer = UserSerializer(instance=user)
+
+        return serializer.data
 
     def create(self, email, password, first_name, last_name):
         return User.objects.create_user(email=email, password=password, first_name=first_name, last_name=last_name)
@@ -23,27 +24,8 @@ class UserService:
     def email_exists(self, email):
 
         try:
-            User.objects.get_user({'email': email})
+            user = User.objects.get(email=email)
         except ObjectDoesNotExist:
             return False
 
         return True
-
-
-class UserTransactionService:
-    def get(self, user_id):
-        transaction_line_item_service = TransactionService()
-        transactions = TransactionLineItem.objects.filter(
-            Q(debtor=User.objects.get(id=user_id)) |
-            Q(creditor=User.objects.get(id=user_id))
-        )
-
-        transaction_ids = sorted(set([t.transaction.id for t in transactions]))
-
-        transactions_dict = []
-        for transaction_id in transaction_ids:
-            transaction = transaction_line_item_service.get(transaction_id)
-            transactions_dict.append(transaction)
-
-        transactions_dict = sorted(transactions_dict, key=lambda t: t['updated_date'], reverse=True)
-        return transactions_dict
