@@ -11,7 +11,6 @@ def create_group(label, creator, members):
         "group_users": members
     }
     r = requests.post(base + "/group/", data=json.dumps(data))
-    print r.text
     return json.loads(r.text)['id']
 
 
@@ -24,7 +23,6 @@ def create_user(first, last="Test"):
     }
     r = requests.post(base + "/auth/create/", data=json.dumps(data))
     response = json.loads(r.text)
-    print r.text
     if 'error' in response and response['error'] == "Email already exists":
         exit(0)
     return response.get("id")
@@ -32,7 +30,6 @@ def create_user(first, last="Test"):
 
 def create_transaction(data):
     r = requests.post(base + "/transaction/", data=data)
-    print r.text
     return json.loads(r.text)
 
 

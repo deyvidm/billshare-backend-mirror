@@ -3,8 +3,6 @@ from django.views import View
 
 from app.auth.services import AuthService
 from app.group.services import UserGroupService
-from app.url_handlers.services import URLService
-from app.user.services import UserTransactionService
 from app.response.services import ResponseService
 from app.transaction.services import UserTransactionService
 
@@ -92,7 +90,6 @@ class UserGroupsView(View):
 
 class UserTransactionsSummaryView(View):
 
-    url_service = URLService()
     response_service = ResponseService()
     user_transaction_service = UserTransactionService()
 
@@ -103,13 +100,14 @@ class UserTransactionsSummaryView(View):
             return self.response_service.invalid_id({'error': valid_user.errors})
 
         try:
-            query_params = self.url_service.parse_fields_from_request(request, [
-                "time_start",
-                "time_end",
-            ])
+            query_params = self.user_transaction_service.validate_date_range(
+                request.GET.get("date_start", None),
+                request.GET.get("date_end", None)
+            )
             summary = self.user_transaction_service.get_summary(user_id,
-                                                                query_params['time_start'],
-                                                                query_params['time_end'])
+                query_params['date_start'],
+                query_params['date_end']
+            )
         except Exception as e:
             return self.response_service.service_exception({'error': str(e)})
 
