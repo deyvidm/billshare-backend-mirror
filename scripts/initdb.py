@@ -10,7 +10,9 @@ def create_group(label, creator, members):
         "creator": creator,
         "group_users": members
     }
-    requests.post(base + "/group/", data=json.dumps(data))
+    r = requests.post(base + "/group/", data=json.dumps(data))
+    print r.text
+    return json.loads(r.text)['id']
 
 
 def create_user(first, last="Test"):
@@ -20,11 +22,54 @@ def create_user(first, last="Test"):
         "first_name": first,
         "last_name": last
     }
-    requests.post(base + "/auth/create/", data=json.dumps(data))
+    r = requests.post(base + "/auth/create/", data=json.dumps(data))
+    response = json.loads(r.text)
+    print r.text
+    if 'error' in response and response['error'] == "Email already exists":
+        exit(0)
+    return response.get("id")
 
 
-create_user("tormund", "giantsbane")
-create_user("sandor", "clegane")
-create_user("jon", "snow")
+def create_transaction(data):
+    r = requests.post(base + "/transaction/", data=data)
+    print r.text
+    return json.loads(r.text)
 
-create_group("frozen cunts", "tormund@test.ca", ["jon@test.ca", "sandor@test.ca"])
+
+# user_1 = create_user("tormund", "giantsbane")
+# user_2 = create_user("sandor", "clegane")
+# user_3 = create_user("jon", "snow")
+#
+# group_1 = create_group("frozen cunts", "tormund@test.ca", ["jon@test.ca", "sandor@test.ca"])
+
+user_1 = 1
+user_2 = 2
+user_3 = 3
+group_1 = 1
+
+
+create_transaction({
+    "total": 300,
+    "currency_code": "CAD",
+    "label": "testLabel",
+    "group": group_1,
+    "creator": user_1,
+    "split_type": "percent",
+    "user_shares": [
+        {
+            "user": user_1,
+            "owes": 33.33,
+            "paid": 100
+        },
+        {
+            "user": user_2,
+            "owes": 33.33,
+            "paid": 100
+        },
+        {
+            "user": user_3,
+            "owes": 33.34,
+            "paid": 100
+        }
+    ]
+})
