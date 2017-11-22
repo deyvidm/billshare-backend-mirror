@@ -15,6 +15,7 @@ from os import (
     path,
 )
 
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = path.dirname(path.dirname(path.abspath(__file__)))
 
@@ -171,6 +172,11 @@ AUTH_USER_MODEL = 'user.User'
 CORS_ORIGIN_ALLOW_ALL = False
 
 CORS_ORIGIN_WHITELIST = ALLOWED_HOSTS
+CORS_ALLOW_CREDENTIALS = True
 
 # CSRF Middleware
 CSRF_TRUSTED_ORIGINS = ALLOWED_HOSTS
+
+# TODO fix this CORS HTTP ISSUES - When moving to full HTTPS relook over these
+SESSION_COOKIE_DOMAIN = '.billshare.io'
+CSRF_COOKIE_DOMAIN = '.billshare.io'

@@ -216,10 +216,14 @@ All UDP     UDP         All ports   All IPv4 All IPv6
 ### Namecheap
 
 ```Bash
-Type        Host            Value                   TTL
-A Record    @               <IP Address>            Automatic
-A Record    www             <IP Address>            Automatic
-NS Record   billshare.io    ns3.digitalocean.com.   Automatic
-NS Record   billshare.io    ns1.digitalocean.com.   Automatic
-NS Record   billshare.io    ns2.digitalocean.com.   Automatic
+Type        Host                Value                   TTL
+A Record    @                   <IP Address>            Automatic
+A Record    www                 <IP Address>            Automatic
+A Record    api                 <IP Address>            Automatic
+NS Record   billshare.io        ns3.digitalocean.com.   Automatic
+NS Record   billshare.io        ns1.digitalocean.com.   Automatic
+NS Record   billshare.io        ns2.digitalocean.com.   Automatic
+NS Record   api.billshare.io    ns3.digitalocean.com.   Automatic
+NS Record   api.billshare.io    ns1.digitalocean.com.   Automatic
+NS Record   api.billshare.io    ns2.digitalocean.com.   Automatic
 ```
