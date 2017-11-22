@@ -2,6 +2,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.views import View
 
 from app.auth.services import AuthService
+from app.group.serializers import GroupIdSerializer
 from app.group.services import UserGroupService
 from app.response.services import ResponseService
 from app.transaction.services import UserTransactionService
@@ -115,3 +116,27 @@ class UserTransactionsSummaryView(View):
             return self.response_service.service_exception({'error': str(e)})
 
         return self.response_service.success(summary)
+
+
+class UserGroupSummaryView(View):
+
+    response_service = ResponseService()
+    user_transaction_service = UserTransactionService()
+
+    def get(self, request, user_id, group_id):
+
+        valid_user = UserIdSerializer(data={'id': user_id})
+        if valid_user.is_valid() is False:
+            return self.response_service.invalid_id({'error': valid_user.errors})
+
+        valid_group = GroupIdSerializer(data={'id': group_id})
+        if valid_group.is_valid() is False:
+            return self.response_service.invalid_id({'error': valid_group.errors})
+
+        try:
+            line_items = self.user_transaction_service.get_transaction_line_items(user_id, group_id, False)
+            balance = self.user_transaction_service.resolve_balance_from_line_items(user_id, line_items)
+        except Exception as e:
+            return self.response_service.service_exception({'error': str(e)})
+
+        return self.response_service.success(balance)

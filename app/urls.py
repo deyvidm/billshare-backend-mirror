@@ -19,7 +19,8 @@ from app.auth.views import LoginView, LogoutView, CreateUserView
 from app.currency.views import CurrencyCodesView, CurrencyView
 from app.group.views import GroupView, GroupTransactionsView
 from app.transaction.views import TransactionView
-from app.user.views import UserView, GetUserIdView, UserTransactionsView, UserTransactionsSummaryView, UserGroupsView
+from app.user.views import UserView, GetUserIdView, UserTransactionsView, UserTransactionsSummaryView, UserGroupsView, \
+    UserGroupSummaryView
 
 from app.url_handlers.views import (
    handler403,
@@ -47,6 +48,7 @@ urlpatterns = [
     url(r'^user/(?P<user_id>\d+)/groups/$', UserGroupsView.as_view()),
     url(r'^user/(?P<user_id>\d+)/transactions/$', UserTransactionsView.as_view()),
     url(r'^user/(?P<user_id>\d+)/transactions/summary/$', UserTransactionsSummaryView.as_view()),
+    url(r'^user/(?P<user_id>\d+)/group/(?P<group_id>\d+)/balance/$', UserGroupSummaryView.as_view()),
 
 ]
 
