@@ -145,17 +145,6 @@ class TransactionService:
 
 
 class UserTransactionService:
-    def validate_date_range(self, date_start, date_end):
-        date_start = datetime.datetime.strptime(date_start, '%Y-%m-%d').date()
-        date_end = datetime.datetime.strptime(date_end, '%Y-%m-%d').date()
-
-        if date_start > date_end:
-            raise Exception("date_start cannot be more recent than date_end")
-
-        return {
-            "date_start": date_start,
-            "date_end": date_end
-        }
 
     def get(self, user_id):
         transaction_line_item_service = TransactionService()
