@@ -1,11 +1,9 @@
 from django.core.exceptions import ObjectDoesNotExist
-
 from app.user.models import User
 from app.user.serializers import UserSerializer
 
 
 class UserService:
-
     def get(self, user_id):
         user = User.objects.get(pk=user_id)
         serializer = UserSerializer(instance=user)

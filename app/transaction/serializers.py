@@ -1,6 +1,19 @@
+import datetime
+
+from django.core.exceptions import ValidationError
 from rest_framework import serializers
 
 from app.transaction.models import Transaction, TransactionLineItem
+
+
+class DateRangeSerializer(serializers.Serializer):
+    date_start = serializers.DateField(format='%Y-%m-%d')
+    date_end = serializers.DateField(format='%Y-%m-%d')
+
+    def validate_date_range(self, date_range):
+        if date_range['date_start'] > date_range['date_end']:
+            raise ValidationError("date_start cannot be more recent than date_end")
+        return date_range
 
 
 class TransactionLineItemSerializer(serializers.ModelSerializer):

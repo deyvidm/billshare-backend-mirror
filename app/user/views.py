@@ -5,6 +5,7 @@ from app.auth.services import AuthService
 from app.group.services import UserGroupService
 from app.response.services import ResponseService
 from app.transaction.services import UserTransactionService
+from app.transaction.serializers import DateRangeSerializer
 
 from app.user.serializers import UserIdSerializer
 from app.user.services import UserService
@@ -86,3 +87,31 @@ class UserGroupsView(View):
             return self.response_service.service_exception({'error': str(e)})
 
         return self.response_service.success(groups)
+
+
+class UserTransactionsSummaryView(View):
+
+    response_service = ResponseService()
+    user_transaction_service = UserTransactionService()
+
+    def get(self, request, user_id):
+
+        valid_user = UserIdSerializer(data={'id': user_id})
+        if valid_user.is_valid() is False:
+            return self.response_service.invalid_id({'error': valid_user.errors})
+
+        valid_range = DateRangeSerializer(data=request.GET)
+        if valid_range.is_valid() is False:
+            return self.response_service.invalid_id({'error': valid_range.errors})
+
+        try:
+            valid_range.validate_date_range(request.GET)
+            summary = self.user_transaction_service.get_summary(
+                user_id,
+                request.GET["date_start"],
+                request.GET["date_end"]
+            )
+        except Exception as e:
+            return self.response_service.service_exception({'error': str(e)})
+
+        return self.response_service.success(summary)
