@@ -189,9 +189,9 @@ class UserTransactionService:
                     creditTotal += line_item.debt
 
         if isinstance(debtTotal, Money):
-            debtTotal = debtTotal.amount
+            debtTotal = float(debtTotal.amount)
         if isinstance(creditTotal, Money):
-            creditTotal = creditTotal.amount
+            creditTotal = float(creditTotal.amount)
 
         return {
             "total transactions": len(transactions),
