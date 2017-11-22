@@ -5,7 +5,7 @@ from app.auth.services import AuthService
 from app.group.services import UserGroupService
 from app.response.services import ResponseService
 from app.transaction.services import UserTransactionService
-from app.transaction.serializers import validate_date_range
+from app.transaction.serializers import DateRangeSerializer
 
 from app.user.serializers import UserIdSerializer
 from app.user.services import UserService
@@ -100,16 +100,16 @@ class UserTransactionsSummaryView(View):
         if valid_user.is_valid() is False:
             return self.response_service.invalid_id({'error': valid_user.errors})
 
+        valid_range = DateRangeSerializer(data=request.GET)
+        if valid_range.is_valid() is False:
+            return self.response_service.invalid_id({'error': valid_range.errors})
+
         try:
-            validate_date_range(
-                self,
-                request.GET.get("date_start", None),
-                request.GET.get("date_end", None)
-            )
+            valid_range.validate_date_range(request.GET)
             summary = self.user_transaction_service.get_summary(
                 user_id,
-                request.GET.get("date_start"),
-                request.GET.get("date_end")
+                request.GET["date_start"],
+                request.GET["date_end"]
             )
         except Exception as e:
             return self.response_service.service_exception({'error': str(e)})
