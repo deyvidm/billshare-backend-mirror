@@ -1,6 +1,6 @@
-from functools import reduce
 import datetime
 from decimal import Decimal
+from functools import reduce
 
 from djmoney.money import Money
 from django.utils import timezone
@@ -146,17 +146,49 @@ class TransactionService:
 
 class UserTransactionService:
 
-    def get(self, user_id):
-        transaction_line_item_service = TransactionService()
-        transactions = TransactionLineItem.objects.filter(
-            Q(debtor=User.objects.get(id=user_id)) |
-            Q(creditor=User.objects.get(id=user_id))
-        )
-        transaction_ids = sorted(set([t.transaction.id for t in transactions]))
+    def sum_debt_credit_from_line_items(self, user_id, line_items):
+        debt_total = 0
+        credit_total = 0
+
+        user = User.objects.get(pk=user_id)
+        for line_item in line_items:
+            if line_item.debtor == user:
+                debt_total += line_item.debt
+            elif line_item.creditor == user:
+                credit_total += line_item.debt
+
+        if isinstance(debt_total, Money):
+            debt_total = float(debt_total.amount)
+        if isinstance(credit_total, Money):
+            credit_total = float(credit_total.amount)
+
+        return [debt_total, credit_total]
+
+    def resolve_balance_from_line_items(self, user_id, line_items):
+        debt_total, credit_total = self.sum_debt_credit_from_line_items(user_id, line_items)
+        return credit_total - debt_total
+
+    def get_transaction_line_items(self, user_id, group_id, resolved):
+        debtor = Q(debtor=User.objects.get(pk=user_id))
+        creditor = Q(creditor=User.objects.get(pk=user_id))
+        filter_bits = debtor | creditor
+
+        if group_id is not None:
+            filter_bits = filter_bits & (Q(group=Group.objects.get(pk=group_id)))
+        if resolved is not None:
+            filter_bits = filter_bits & (Q(resolved=resolved))
+
+        return TransactionLineItem.objects.filter(filter_bits)
+
+    def get(self, user_id, group_id, resolved):
+        transaction_service = TransactionService()
+
+        transaction_line_items = self.get_transaction_line_items(user_id, group_id, resolved)
+        transaction_ids = sorted(set([t.transaction.id for t in transaction_line_items]))
 
         transactions_dict = []
         for transaction_id in transaction_ids:
-            transaction = transaction_line_item_service.get(transaction_id)
+            transaction = transaction_service.get(transaction_id)
             transactions_dict.append(transaction)
 
         transactions_dict = sorted(transactions_dict, key=lambda t: t['updated_date'], reverse=True)

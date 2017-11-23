@@ -83,3 +83,21 @@ class GroupTransactionsView(View):
             return self.response_service.service_exception({'error': str(e)})
 
         return self.response_service.success(transactions)
+
+
+class GroupTransactionsSummaryView(View):
+
+    response_service = ResponseService()
+    group_service = GroupService()
+
+    def get(self, request, group_id):
+        valid_group = GroupIdSerializer(data={'id': group_id})
+        if valid_group.is_valid() is False:
+            return self.response_service.invalid_id({'error': valid_group.errors})
+
+        try:
+            transactions = self.group_service.get_transactions(group_id)
+        except Exception as e:
+            return self.response_service.service_exception({'error': str(e)})
+
+        return self.response_service.success(transactions)

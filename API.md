@@ -1,6 +1,13 @@
 # Bill Share API Route Documentation
 
+Table of Contents
+=================
+
+Table of Contents
+=================
+
    * [Bill Share API Route Documentation](#bill-share-api-route-documentation)
+   * [Table of Contents](#table-of-contents)
       * [Hosts](#hosts)
       * [Users](#users)
          * [GET User by Id](#get-user-by-id)
@@ -41,9 +48,15 @@
             * [Failure](#failure-5)
             * [Example 1](#example-1-4)
                * [Request](#request-10)
+               * [Success](#success-9)
+      * [Groups](#groups)
+         * [GET Group by Id](#get-group-by-id)
+            * [Request](#request-11)
+            * [Success](#success-10)
+            * [Failure](#failure-6)
+            * [Example 1](#example-1-5)
                * [Request](#request-12)
                * [Success](#success-11)
-      * [Groups](#groups)
          * [Create Group](#create-group)
             * [Request](#request-13)
             * [Success](#success-12)
@@ -73,49 +86,67 @@
             * [Example 1](#example-1-9)
                * [Request](#request-20)
                * [Success](#success-19)
+            * [Example 2](#example-2-1)
+               * [Request](#request-21)
+               * [Success](#success-20)
          * [GET Transaction by Id](#get-transaction-by-id)
-            * [Request](#request-21)
-            * [Success](#success-20)
+            * [Request](#request-22)
+            * [Success](#success-21)
             * [Failure](#failure-11)
             * [Example 1](#example-1-10)
-               * [Request](#request-22)
-               * [Success](#success-21)
+               * [Request](#request-23)
+               * [Success](#success-22)
          * [UPDATE Transaction, resolve debt](#update-transaction-resolve-debt)
-            * [Request](#request-23)
-            * [Success](#success-22)
+            * [Request](#request-24)
+            * [Success](#success-23)
             * [Failure](#failure-12)
             * [Example 1](#example-1-11)
-               * [Request](#request-24)
-               * [Success](#success-23)
+               * [Request](#request-25)
+               * [Success](#success-24)
          * [GET Transactions By User](#get-transactions-by-user)
-            * [Request](#request-25)
-            * [Success](#success-24)
+            * [Request](#request-26)
+            * [Success](#success-25)
             * [Failure](#failure-13)
             * [Example 1](#example-1-12)
-               * [Request](#request-26)
-               * [Success](#success-25)
+               * [Request](#request-27)
+               * [Success](#success-26)
          * [GET Transactions by Group](#get-transactions-by-group)
-            * [Request](#request-27)
-            * [Success](#success-26)
+            * [Request](#request-28)
+            * [Success](#success-27)
             * [Failure](#failure-14)
             * [Example 1](#example-1-13)
-               * [Request](#request-28)
-               * [Success](#success-27)
+               * [Request](#request-29)
+               * [Success](#success-28)
       * [Currency](#currency)
          * [GET List of Available Currency Codes](#get-list-of-available-currency-codes)
-            * [Request](#request-29)
-            * [Success](#success-28)
+            * [Request](#request-30)
+            * [Success](#success-29)
             * [Failure](#failure-15)
             * [Example 1](#example-1-14)
-               * [Request](#request-30)
-               * [Success](#success-29)
+               * [Request](#request-31)
+               * [Success](#success-30)
          * [GET Dictionary of Available Currency Codes and their Foreign Exchange Rates](#get-dictionary-of-available-currency-codes-and-their-foreign-exchange-rates)
-            * [Request](#request-31)
-            * [Success](#success-30)
+            * [Request](#request-32)
+            * [Success](#success-31)
             * [Failure](#failure-16)
             * [Example 1](#example-1-15)
-               * [Request](#request-32)
-               * [Success](#success-31)
+               * [Request](#request-33)
+               * [Success](#success-32)
+      * [Data Visualization](#data-visualization)
+         * [GET User Transaction Summary per date range](#get-user-transaction-summary-per-date-range)
+            * [Request](#request-34)
+            * [Success](#success-33)
+            * [Failure](#failure-17)
+            * [Example 1](#example-1-16)
+               * [Request](#request-35)
+               * [Success](#success-34)
+         * [GET User Transaction balance within a group](#get-user-transaction-balance-within-a-group)
+            * [Request](#request-36)
+            * [Success](#success-35)
+            * [Example 1](#example-1-17)
+               * [Request](#request-37)
+               * [Success](#success-36)
+
 
 ## Hosts
 
@@ -1523,4 +1554,98 @@ GET /currency/
   "USD": 0.78604,
   "ZAR": 11.105
 }
+```
+
+## Data Visualization
+
+### GET User Transaction Summary per date range
+
+#### Request
+
+```bash
+GET /user/<user_id>/transactions/summary/
+
+date_start <String, Required>
+date_end <String, Required>
+{}
+``` 
+
+#### Success
+
+```Bash
+200
+{
+    "date_end": <String, Required>,
+    "date_start": <String, Required>,
+    "total transactions": <Int, Required>,
+    "debt": <Float, Required>,
+    "credit": <Float, Required>
+}
+```
+
+#### Failure
+```bash
+404
+{
+    "error": "['date_start cannot be more recent than date_end']"
+}
+```
+
+#### Example 1
+
+##### Request
+```bash
+GET /user/1/transactions/summary?date_start=2017-08-01&date_end=2017-09-01/
+```
+
+##### Success
+>let the time range be 2017-08-01 and 2018-09-01 
+
+>within the time range there were 5 transactions involving the user
+
+>user is owed 20 across all transactions (within range)
+
+>user owes 90 across all transactions (within range)
+```bash
+200
+{
+    "date_end": "2017-09-01",
+    "date_start": "2017-08-01",
+    "total transactions": 5,
+    "debt": 20,
+    "credit": 90
+}
+```
+
+### GET User Transaction balance within a group 
+
+#### Request
+
+```bash
+GET /user/<user_id>/group/<group_id>/balance/
+{}
+``` 
+
+#### Success
+
+```Bash
+200
+<Float, Required>
+```
+
+#### Example 1
+
+##### Request
+```bash
+GET /user/3/group/1/balance
+```
+
+##### Success
+>positive number means the user is owed by others
+
+>negative number means the user owes others
+
+```bash
+200
+60.08
 ```
