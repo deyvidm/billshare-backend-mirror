@@ -1524,3 +1524,66 @@ GET /currency/
   "ZAR": 11.105
 }
 ```
+
+## Data Visualization
+
+### GET User Transaction Summary per date range
+
+
+#### Request
+
+```bash
+GET /user/<id>/transactions/summary
+
+date_start <String, Required>
+date_end <String, Required>
+{}
+``` 
+
+#### Success
+
+```Bash
+200
+{
+    "date_end": <String, Required>,
+    "date_start": <String, Required>,
+    "total transactions": <Int, Required>,
+    "debt": <Float, Required>,
+    "credit": <Float, Required>
+}
+```
+
+#### Failure
+
+```Bash
+404
+{
+  'error': 'some error'
+}
+```
+
+#### Example
+
+#### Request
+```bash
+GET /user/1/transactions/summary?date_start=2017-08-01&date_end=2017-09-01
+```
+
+#### Success
+>let the time range be 2017-08-01 and 2018-09-01 
+
+>within the time range there were 5 transactions involving the user
+
+>user is owed 20 across all transactions (within range)
+
+>user owes 90 across all transactions (within range)
+```bash
+200
+{
+    "date_end": "2017-09-01",
+    "date_start": "2017-08-01",
+    "total transactions": 5,
+    "debt": 20,
+    "credit": 90
+}
+```
