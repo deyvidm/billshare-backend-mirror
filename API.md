@@ -1584,40 +1584,6 @@ date_end <String, Required>
 ```
 
 #### Failure
-
-```bash
-404
-{
-    "error": {
-        "date_start": [
-            "Date has wrong format. Use one of these formats instead: YYYY[-MM[-DD]]."
-        ]
-    }
-}
-```
-
-```bash
-404
-{
-    "error": {
-        "date_end": [
-            "Date has wrong format. Use one of these formats instead: YYYY[-MM[-DD]]."
-        ]
-    }
-}
-```
-
-```bash
-404
-{
-    "error": {
-        "date_start": [
-            "Date has wrong format. Use one of these formats instead: YYYY[-MM[-DD]]."
-        ]
-    }
-}
-```
-
 ```bash
 404
 {
