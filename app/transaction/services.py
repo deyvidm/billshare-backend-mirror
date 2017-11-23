@@ -168,7 +168,7 @@ class UserTransactionService:
         debt_total, credit_total = self.sum_debt_credit_from_line_items(user_id, line_items)
         return credit_total - debt_total
 
-    def get_transaction_line_items(self, user_id, group_id=None, resolved=None):
+    def get_transaction_line_items(self, user_id, group_id, resolved):
         debtor = Q(debtor=User.objects.get(pk=user_id))
         creditor = Q(creditor=User.objects.get(pk=user_id))
         filter_bits = debtor | creditor
@@ -180,7 +180,7 @@ class UserTransactionService:
 
         return TransactionLineItem.objects.filter(filter_bits)
 
-    def get(self, user_id, group_id=None, resolved=None):
+    def get(self, user_id, group_id, resolved):
         transaction_service = TransactionService()
 
         transaction_line_items = self.get_transaction_line_items(user_id, group_id, resolved)

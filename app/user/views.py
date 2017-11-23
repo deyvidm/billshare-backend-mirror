@@ -61,7 +61,7 @@ class UserTransactionsView(View):
             return self.response_service.invalid_id({'error': valid_group.errors})
 
         try:
-            transactions = self.user_transaction_service.get(user_id)
+            transactions = self.user_transaction_service.get(user_id, None, None)
         except Exception as e:
             return self.response_service.service_exception({'error': str(e)})
 
