@@ -1529,7 +1529,6 @@ GET /currency/
 
 ### GET User Transaction Summary per date range
 
-
 #### Request
 
 ```bash
@@ -1586,4 +1585,45 @@ GET /user/1/transactions/summary?date_start=2017-08-01&date_end=2017-09-01
     "debt": 20,
     "credit": 90
 }
+```
+
+### GET User Transaction balance within a group 
+
+#### Request
+
+```bash
+GET /user/<id>/group/<id>/balance
+{}
+``` 
+
+#### Success
+
+```Bash
+200
+<Float, Required>
+```
+
+#### Failure
+
+```Bash
+404
+{
+  'error': 'some error'
+}
+```
+#### Example
+
+#### Request
+```bash
+GET /user/3/group/1/balance
+```
+
+#### Success
+>positive number means the user is owed by others
+
+>negative number means the user owes others
+
+```bash
+200
+60.08
 ```
