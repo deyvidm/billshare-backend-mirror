@@ -162,14 +162,14 @@ class UserTransactionService:
         transactions_dict = sorted(transactions_dict, key=lambda t: t['updated_date'], reverse=True)
         return transactions_dict
 
-    def get_summary(self, user_id, start_date=None, end_date=None):
-        if not start_date:
-            start_date = timezone.now()
-        if not end_date:
-            end_date = (start_date.replace(day=1) - datetime.timedelta(days=1)).replace(day=1)
+    def get_summary(self, user_id, last_date=None, first_date=None):
+        if not last_date:
+            last_date = timezone.now()
+        if not first_date:
+            first_date = (last_date.replace(day=1) - datetime.timedelta(days=1)).replace(day=1)
 
         transactions = Transaction.objects.filter(
-            Q(created_date__range=[end_date, start_date]) &
+            Q(created_date__range=[first_date, last_date]) &
             (
                 Q(transaction_line_items__debtor=user_id) |
                 Q(transaction_line_items__creditor=user_id)
@@ -197,6 +197,6 @@ class UserTransactionService:
             "total transactions": len(transactions),
             "credit": creditTotal,
             "debt": debtTotal,
-            "date_start": end_date,
-            "date_end": start_date
+            "date_start": first_date,
+            "date_end": last_date
         }

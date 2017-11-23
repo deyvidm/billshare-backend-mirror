@@ -108,8 +108,8 @@ class UserTransactionsSummaryView(View):
             valid_range.validate_date_range(request.GET)
             summary = self.user_transaction_service.get_summary(
                 user_id,
-                request.GET["start_date"],
-                request.GET["end_date"]
+                request.GET["last_date"],
+                request.GET["first_date"]
             )
         except Exception as e:
             return self.response_service.service_exception({'error': str(e)})
