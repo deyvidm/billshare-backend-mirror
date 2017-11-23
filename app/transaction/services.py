@@ -162,7 +162,7 @@ class UserTransactionService:
         transactions_dict = sorted(transactions_dict, key=lambda t: t['updated_date'], reverse=True)
         return transactions_dict
 
-    def get_summary(self, user_id, end_date=None, start_date=None):
+    def get_summary(self, user_id, start_date=None, end_date=None):
         if not start_date:
             start_date = timezone.now()
         if not end_date:
