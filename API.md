@@ -3,7 +3,11 @@
 Table of Contents
 =================
 
+Table of Contents
+=================
+
    * [Bill Share API Route Documentation](#bill-share-api-route-documentation)
+   * [Table of Contents](#table-of-contents)
       * [Hosts](#hosts)
       * [Users](#users)
          * [GET User by Id](#get-user-by-id)
@@ -134,14 +138,15 @@ Table of Contents
             * [Success](#success-33)
             * [Failure](#failure-17)
             * [Example 1](#example-1-16)
-            * [Request](#request-35)
-            * [Success](#success-34)
+               * [Request](#request-35)
+               * [Success](#success-34)
          * [GET User Transaction balance within a group](#get-user-transaction-balance-within-a-group)
             * [Request](#request-36)
             * [Success](#success-35)
             * [Example 1](#example-1-17)
-            * [Request](#request-37)
-            * [Success](#success-36)
+               * [Request](#request-37)
+               * [Success](#success-36)
+
 
 ## Hosts
 
@@ -1558,7 +1563,7 @@ GET /currency/
 #### Request
 
 ```bash
-GET /user/<user_id>/transactions/summary
+GET /user/<user_id>/transactions/summary/
 
 date_start <String, Required>
 date_end <String, Required>
@@ -1622,12 +1627,12 @@ date_end <String, Required>
 
 #### Example 1
 
-#### Request
+##### Request
 ```bash
-GET /user/1/transactions/summary?date_start=2017-08-01&date_end=2017-09-01
+GET /user/1/transactions/summary?date_start=2017-08-01&date_end=2017-09-01/
 ```
 
-#### Success
+##### Success
 >let the time range be 2017-08-01 and 2018-09-01 
 
 >within the time range there were 5 transactions involving the user
@@ -1651,7 +1656,7 @@ GET /user/1/transactions/summary?date_start=2017-08-01&date_end=2017-09-01
 #### Request
 
 ```bash
-GET /user/<user_id>/group/<group_id>/balance
+GET /user/<user_id>/group/<group_id>/balance/
 {}
 ``` 
 
@@ -1664,12 +1669,12 @@ GET /user/<user_id>/group/<group_id>/balance
 
 #### Example 1
 
-#### Request
+##### Request
 ```bash
 GET /user/3/group/1/balance
 ```
 
-#### Success
+##### Success
 >positive number means the user is owed by others
 
 >negative number means the user owes others
