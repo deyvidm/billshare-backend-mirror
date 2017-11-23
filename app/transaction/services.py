@@ -197,6 +197,6 @@ class UserTransactionService:
             "total transactions": len(transactions),
             "credit": creditTotal,
             "debt": debtTotal,
-            "date_start": first_date,
-            "date_end": last_date
+            "first_date": first_date,
+            "last_date": last_date
         }
