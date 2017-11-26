@@ -1,5 +1,8 @@
+import datetime
 from django.core.exceptions import ObjectDoesNotExist
 
+from app.group.services import UserGroupService
+from app.transaction.services import UserTransactionService, TransactionService
 from app.user.models import User
 from app.user.serializers import UserSerializer
 
@@ -28,3 +31,26 @@ class UserService:
             return False
 
         return True
+
+
+class DashboardService:
+
+    user_group_service = UserGroupService()
+    user_transaction_service = UserTransactionService()
+    transaction_service = TransactionService()
+
+    def get(self, user_id):
+        groups = self.user_group_service.get(user_id, True)
+        user = User.objects.get(pk=user_id)
+        transactions = self.user_transaction_service.get_transactions_in_range(
+            user_id,
+            user.last_login,
+            datetime.datetime.utcnow()
+        )
+
+        transactions = [self.transaction_service.get(t.id) for t in transactions]
+
+        return {
+            "groups": groups,
+            "transactions": transactions
+        }
