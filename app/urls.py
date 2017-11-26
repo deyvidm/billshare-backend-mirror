@@ -25,7 +25,8 @@ from app.user.views import (
     UserTransactionsView,
     UserTransactionsSummaryView,
     UserGroupsView,
-    UserGroupSummaryView
+    UserGroupSummaryView,
+    UserLastActivityUpdatesView
 )
 
 from app.url_handlers.views import (
@@ -51,6 +52,7 @@ urlpatterns = [
 
     url(r'^user/$', GetUserIdView.as_view()),
     url(r'^user/(?P<user_id>\d+)/$', UserView.as_view()),
+    url(r'^user/(?P<user_id>\d+)/dashboard/$', UserLastActivityUpdatesView.as_view()),
     url(r'^user/(?P<user_id>\d+)/groups/$', UserGroupsView.as_view()),
     url(r'^user/(?P<user_id>\d+)/transactions/$', UserTransactionsView.as_view()),
     url(r'^user/(?P<user_id>\d+)/transactions/summary/$', UserTransactionsSummaryView.as_view()),

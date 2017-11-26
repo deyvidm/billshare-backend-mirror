@@ -140,3 +140,23 @@ class UserGroupSummaryView(View):
             return self.response_service.service_exception({'error': str(e)})
 
         return self.response_service.success(balance)
+
+
+class UserLastActivityUpdatesView(View):
+
+    response_service = ResponseService()
+    user_group_service = UserGroupService()
+    dashboard_service = UserDashboardService()
+
+    def get(self, request, user_id):
+
+        valid_user = UserIdSerializer(data={'id': user_id})
+        if valid_user.is_valid() is False:
+            return self.response_service.invalid_id({'error': valid_user.errors})
+
+        try:
+            groups = self.user_group_service.get(user_id, True)
+        except Exception as e:
+            return self.response_service.service_exception({'error': str(e)})
+
+        return self.response_service.success(groups)

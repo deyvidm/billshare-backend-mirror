@@ -1,4 +1,5 @@
-from django.forms import model_to_dict
+import datetime
+
 from django.core.exceptions import ObjectDoesNotExist
 
 from app.group.models import Group, GroupUser
@@ -57,7 +58,7 @@ class GroupService:
 
         transactions_dict = []
 
-        for transaction in Transaction.objects.filter(group=Group.objects.get(id=group_id)).order_by('-updated_date'):
+        for transaction in Transaction.objects.filter(group=Group.objects.get(id=group_id)).order_by('-created_date'):
             transactions = transaction_service.get(transaction.id)
             transactions_dict.append(transactions)
 
@@ -65,9 +66,18 @@ class GroupService:
 
 
 class UserGroupService:
-    def get(self, user_id):
+    def get(self, user_id, since_last_login):
         group_service = GroupService()
 
-        groups = Group.objects.filter(_group_users__user=user_id).order_by('-updated_date')
+        date = datetime.datetime.strptime('2017-01-01', '%Y-%m-%d')
+
+        if since_last_login is True:
+            user = User.objects.get(pk=user_id)
+            date = user.last_login
+
+        groups = Group.objects.filter(
+            _group_users__user=user_id,
+            created_date__gte=date
+        ).order_by('-created_date')
 
         return [group_service.get(group_id=group.id) for group in groups]
