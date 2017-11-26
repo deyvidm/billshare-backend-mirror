@@ -146,7 +146,6 @@ class UserLastActivityUpdatesView(View):
 
     response_service = ResponseService()
     user_group_service = UserGroupService()
-    dashboard_service = UserDashboardService()
 
     def get(self, request, user_id):
 
