@@ -8,6 +8,8 @@ from app.group.serializers import GroupSerializer
 from app.transaction.models import Transaction
 from app.transaction.services import TransactionService
 
+from app.mail.services import MailService
+
 from app.user.models import User
 
 
@@ -21,6 +23,9 @@ class GroupService:
         return serializer.data
 
     def create(self, label, creator_email, user_emails):
+
+        mail_service = MailService()
+
         try:
             creator = User.objects.get(email=creator_email)
         except ObjectDoesNotExist:
@@ -44,6 +49,7 @@ class GroupService:
 
         for user in valid_users:
             GroupUser.objects.create(group=group, user=user)
+            mail_service.send_group_invite(creator.email, user.email, group.label)
 
         return self.get(group.id)
 
