@@ -6,6 +6,7 @@ from djmoney.money import Money
 from django.utils import timezone
 from django.db.models import Q
 
+from app.currency.services import FixerCurrencyService
 from app.user.models import User
 from app.group.models import Group
 from app.transaction.models import Transaction
@@ -204,6 +205,7 @@ class UserTransactionService:
         ).distinct()
 
     def get_summary(self, user_id, start_date=None, end_date=None):
+        fixer_currency_service = FixerCurrencyService()
         if not end_date:
             end_date = timezone.now()
         if not start_date:
@@ -218,10 +220,12 @@ class UserTransactionService:
         for transaction_id in transaction_ids:
             transaction = Transaction.objects.get(pk=transaction_id)
             for line_item in transaction.transaction_line_items.all():
+                if line_item.debtor == user and line_item.creditor == user:
+                    continue
                 if line_item.debtor == user:
-                    debtTotal += line_item.debt
+                    debtTotal += fixer_currency_service.normalize_amount(line_item.debt)
                 elif line_item.creditor == user:
-                    creditTotal += line_item.debt
+                    creditTotal += fixer_currency_service.normalize_amount(line_item.debt)
 
         if isinstance(debtTotal, Money):
             debtTotal = float(debtTotal.amount)
