@@ -13,6 +13,8 @@ class AuthService():
         if user is None:
             return None
 
+        user.second_last_login = user.last_login
+
         login(request, user)
 
         return user_service.get(user.pk)

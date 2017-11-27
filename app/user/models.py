@@ -1,6 +1,6 @@
+import datetime
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.db import models
-from django.forms import model_to_dict
 
 
 class UserManager(BaseUserManager):
@@ -51,6 +51,11 @@ class User(AbstractBaseUser):
         max_length=255,
         blank=False,
         null=False,
+    )
+    second_last_login = models.DateTimeField(
+        blank=False,
+        null=False,
+        default=datetime.datetime.min
     )
 
     USERNAME_FIELD = 'email'
