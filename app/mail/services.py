@@ -4,6 +4,8 @@ import threading
 from django.conf import settings
 from django.core.mail import EmailMessage
 
+from app.constants import API_URL
+
 
 class MailService():
 
@@ -20,7 +22,7 @@ class MailService():
         if domain in valid_domains:
             self.send_mail(
                 title='Billshare.io Group Invite',
-                body='You have been invited by "{}" to join group "{}"\nClick here to accept: https://api.billshare.io/mail/group/invite/'.format(creator_email, group_label),
+                body='You have been invited by "{}" to join group "{}"\nClick here to accept: {}mail/group/invite/'.format(creator_email, group_label, API_URL),
                 emails=[invited_email],
             )
 

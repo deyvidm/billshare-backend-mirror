@@ -2,11 +2,13 @@ from django.conf import settings
 from django.http import JsonResponse
 from django.shortcuts import redirect
 
+from app.constants import SITE_URL
+
 
 class ResponseService():
 
     def billshare_redirect(self):
-        return redirect("https://billshare.io/")
+        return redirect(SITE_URL)
 
     def json_decode_exception(self, response):
         return JsonResponse(
