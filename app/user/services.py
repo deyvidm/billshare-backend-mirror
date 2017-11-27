@@ -44,7 +44,7 @@ class DashboardService:
         user = User.objects.get(pk=user_id)
         transactions = self.user_transaction_service.get_transactions_in_range(
             user_id,
-            user.last_login,
+            user.second_last_login,
             datetime.datetime.utcnow()
         )
 
