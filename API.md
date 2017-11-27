@@ -1,17 +1,10 @@
 # Bill Share API Route Documentation
 
-Table of Contents
-=================
-
-Table of Contents
-=================
 
 Table of Contents
 =================
 
    * [Bill Share API Route Documentation](#bill-share-api-route-documentation)
-   * [Table of Contents](#table-of-contents)
-   * [Table of Contents](#table-of-contents-1)
       * [Hosts](#hosts)
       * [Users](#users)
          * [GET User by Id](#get-user-by-id)
