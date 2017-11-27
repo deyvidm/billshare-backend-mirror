@@ -209,7 +209,7 @@ class UserTransactionService:
         if not start_date:
             start_date = (end_date.replace(day=1) - datetime.timedelta(days=1)).replace(day=1)
 
-        transactions = self.get_transactions_in_range(start_date, end_date)
+        transactions = self.get_transactions_in_range(user_id, start_date, end_date)
 
         debtTotal = 0
         creditTotal = 0

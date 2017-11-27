@@ -11,7 +11,7 @@ class Group(models.Model):
         'user.User',
         on_delete=models.CASCADE,
     )
-    created_date = models.DateTimeField(
+    updated_date = models.DateTimeField(
         auto_now_add=True
     )
 

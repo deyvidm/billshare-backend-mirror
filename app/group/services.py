@@ -58,7 +58,7 @@ class GroupService:
 
         transactions_dict = []
 
-        for transaction in Transaction.objects.filter(group=Group.objects.get(id=group_id)).order_by('-created_date'):
+        for transaction in Transaction.objects.filter(group=Group.objects.get(id=group_id)).order_by('-updated_date'):
             transactions = transaction_service.get(transaction.id)
             transactions_dict.append(transactions)
 
@@ -66,18 +66,18 @@ class GroupService:
 
 
 class UserGroupService:
-    def get(self, user_id, since_last_login):
+    def get(self, user_id, since_last_login=False):
         group_service = GroupService()
 
-        date = datetime.datetime.strptime('2017-01-01', '%Y-%m-%d')
+        date = datetime.datetime.min
 
-        if since_last_login is True:
+        if since_last_login:
             user = User.objects.get(pk=user_id)
             date = user.last_login
 
         groups = Group.objects.filter(
             _group_users__user=user_id,
-            created_date__gte=date
-        ).order_by('-created_date')
+            updated_date__gte=date
+        ).order_by('-updated_date')
 
         return [group_service.get(group_id=group.id) for group in groups]
