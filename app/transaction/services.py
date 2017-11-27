@@ -6,6 +6,7 @@ from djmoney.money import Money
 from django.utils import timezone
 from django.db.models import Q
 
+from app.currency.services import FixerCurrencyService
 from app.user.models import User
 from app.group.models import Group
 from app.transaction.models import Transaction
@@ -194,19 +195,23 @@ class UserTransactionService:
         transactions_dict = sorted(transactions_dict, key=lambda t: t['updated_date'], reverse=True)
         return transactions_dict
 
-    def get_summary(self, user_id, date_start=None, date_end=None):
-        if not date_end:
-            date_end = timezone.now()
-        if not date_start:
-            date_start = (date_end.replace(day=1) - datetime.timedelta(days=1)).replace(day=1)
-
-        transactions = Transaction.objects.filter(
-            Q(created_date__range=[date_start, date_end]) &
+    def get_transactions_in_range(self, user_id, start_date, end_date):
+        return Transaction.objects.filter(
+            Q(created_date__range=[start_date, end_date]) &
             (
                 Q(transaction_line_items__debtor=user_id) |
                 Q(transaction_line_items__creditor=user_id)
             )
         ).distinct()
+
+    def get_summary(self, user_id, start_date=None, end_date=None):
+        fixer_currency_service = FixerCurrencyService()
+        if not end_date:
+            end_date = timezone.now()
+        if not start_date:
+            start_date = (end_date.replace(day=1) - datetime.timedelta(days=1)).replace(day=1)
+
+        transactions = self.get_transactions_in_range(user_id, start_date, end_date)
 
         debtTotal = 0
         creditTotal = 0
@@ -215,10 +220,12 @@ class UserTransactionService:
         for transaction_id in transaction_ids:
             transaction = Transaction.objects.get(pk=transaction_id)
             for line_item in transaction.transaction_line_items.all():
+                if line_item.debtor == user and line_item.creditor == user:
+                    continue
                 if line_item.debtor == user:
-                    debtTotal += line_item.debt
+                    debtTotal += fixer_currency_service.normalize_amount(line_item.debt)
                 elif line_item.creditor == user:
-                    creditTotal += line_item.debt
+                    creditTotal += fixer_currency_service.normalize_amount(line_item.debt)
 
         if isinstance(debtTotal, Money):
             debtTotal = float(debtTotal.amount)
@@ -229,6 +236,6 @@ class UserTransactionService:
             "total transactions": len(transactions),
             "credit": creditTotal,
             "debt": debtTotal,
-            "date_start": date_start,
-            "date_end": date_end
+            "date_start": start_date,
+            "date_end": end_date
         }

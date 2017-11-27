@@ -1,13 +1,10 @@
 # Bill Share API Route Documentation
 
-Table of Contents
-=================
 
 Table of Contents
 =================
 
    * [Bill Share API Route Documentation](#bill-share-api-route-documentation)
-   * [Table of Contents](#table-of-contents)
       * [Hosts](#hosts)
       * [Users](#users)
          * [GET User by Id](#get-user-by-id)
@@ -146,6 +143,13 @@ Table of Contents
             * [Example 1](#example-1-17)
                * [Request](#request-37)
                * [Success](#success-36)
+      * [Dashboard](#dashboard)
+         * [GET Activity updates since last login](#get-activity-updates-since-last-login)
+            * [Request](#request-38)
+            * [Success](#success-37)
+            * [Example 1](#example-1-18)
+               * [Request](#request-39)
+               * [Success](#success-38)
 
 
 ## Hosts
@@ -1648,4 +1652,127 @@ GET /user/3/group/1/balance
 ```bash
 200
 60.08
+```
+
+## Dashboard
+
+### GET Activity updates since last login
+
+#### Request
+
+```bash
+GET /user/<user_id>/dashboard/
+```
+
+#### Success
+- 'groups' is a list of Group objects as outlined by `GET /group/<group_id>/`
+- 'transactions' is a list of Transaction objects as outline by `GET /transactions/<transaction_id>` 
+- an item in theses lists means that the item was updated while the user was offline
+- it's possible for both lists to be empty (i.e. no new activity since last login)
+
+```Bash
+200
+{
+    "groups": [
+        <Group, Optional>
+    ],
+    "transactions": [
+        <Transaction, Optional>,
+        ...
+    ]
+}
+```
+
+#### Example 1
+
+##### Request
+```bash
+GET /user/2/dashboard/
+```
+
+##### Success
+```bash
+200
+{
+    "transactions": [
+        {
+            "id": 2,
+            "transaction_line_items": [
+                {
+                    "id": 6,
+                    "label": "",
+                    "percentage": "60.00",
+                    "debt_currency": "CAD",
+                    "debt": "60.00",
+                    "resolved": false,
+                    "transaction": 2,
+                    "group": 1,
+                    "debtor": 2,
+                    "creditor": 3
+                },
+                {
+                    "id": 5,
+                    "label": "",
+                    "percentage": "30.00",
+                    "debt_currency": "CAD",
+                    "debt": "30.00",
+                    "resolved": true,
+                    "transaction": 2,
+                    "group": 1,
+                    "debtor": 2,
+                    "creditor": 2
+                },
+                {
+                    "id": 4,
+                    "label": "",
+                    "percentage": "10.00",
+                    "debt_currency": "CAD",
+                    "debt": "10.00",
+                    "resolved": true,
+                    "transaction": 2,
+                    "group": 1,
+                    "debtor": 3,
+                    "creditor": 3
+                }
+            ],
+            "label": "User 2 owes User 3",
+            "created_date": "2017-11-22T19:35:00.295984Z",
+            "updated_date": "2017-11-22T19:35:00.296025Z",
+            "total_currency": "CAD",
+            "total": "100.00",
+            "split_type": "money",
+            "group": 1,
+            "creator": 2
+        }
+    ],
+    "groups": [
+        {
+            "id": 1,
+            "label": "frozen bois",
+            "group_users": [
+                {
+                    "id": 3,
+                    "email": "jon@test.ca",
+                    "first_name": "jon",
+                    "last_login": "2017-11-22T19:35:00.054840Z",
+                    "last_name": "snow"
+                },
+                {
+                    "id": 2,
+                    "email": "sandor@test.ca",
+                    "first_name": "sandor",
+                    "last_login": "2017-11-22T19:34:59.811355Z",
+                    "last_name": "clegane"
+                },
+                {
+                    "id": 1,
+                    "email": "tormund@test.ca",
+                    "first_name": "tormund",
+                    "last_login": "2017-11-26T19:17:14.048552Z",
+                    "last_name": "giantsbane"
+                }
+            ]
+        }
+    ]
+}
 ```

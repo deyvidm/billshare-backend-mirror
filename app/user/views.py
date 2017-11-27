@@ -9,7 +9,7 @@ from app.transaction.services import UserTransactionService
 from app.transaction.serializers import DateRangeSerializer
 
 from app.user.serializers import UserIdSerializer
-from app.user.services import UserService
+from app.user.services import UserService, DashboardService
 
 
 class UserView(View):
@@ -140,3 +140,22 @@ class UserGroupSummaryView(View):
             return self.response_service.service_exception({'error': str(e)})
 
         return self.response_service.success(balance)
+
+
+class UserLastActivityUpdatesView(View):
+
+    response_service = ResponseService()
+    dashboard_service = DashboardService()
+
+    def get(self, request, user_id):
+
+        valid_user = UserIdSerializer(data={'id': user_id})
+        if valid_user.is_valid() is False:
+            return self.response_service.invalid_id({'error': valid_user.errors})
+
+        try:
+            activity_summary = self.dashboard_service.get(user_id)
+        except Exception as e:
+            return self.response_service.service_exception({'error': str(e)})
+
+        return self.response_service.success(activity_summary)

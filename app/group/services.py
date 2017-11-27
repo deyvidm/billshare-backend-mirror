@@ -1,4 +1,5 @@
-from django.forms import model_to_dict
+import datetime
+
 from django.core.exceptions import ObjectDoesNotExist
 
 from app.group.models import Group, GroupUser
@@ -65,9 +66,18 @@ class GroupService:
 
 
 class UserGroupService:
-    def get(self, user_id):
+    def get(self, user_id, since_last_login=False):
         group_service = GroupService()
 
-        groups = Group.objects.filter(_group_users__user=user_id).order_by('-updated_date')
+        date = datetime.datetime.min
+
+        if since_last_login:
+            user = User.objects.get(pk=user_id)
+            date = user.last_login
+
+        groups = Group.objects.filter(
+            _group_users__user=user_id,
+            updated_date__gte=date
+        ).order_by('-updated_date')
 
         return [group_service.get(group_id=group.id) for group in groups]

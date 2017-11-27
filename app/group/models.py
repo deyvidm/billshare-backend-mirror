@@ -7,14 +7,12 @@ class Group(models.Model):
         blank=False,
         null=False,
     )
-
     creator = models.ForeignKey(
         'user.User',
         on_delete=models.CASCADE,
     )
-
     updated_date = models.DateTimeField(
-        auto_now_add=True,
+        auto_now_add=True
     )
 
 

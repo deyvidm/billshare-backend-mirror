@@ -1,5 +1,7 @@
+import decimal
 import requests
 
+from djmoney.money import Money
 from moneyed import CURRENCIES
 
 
@@ -54,3 +56,17 @@ class FixerCurrencyService:
             return list(currency_codes)
 
         return None
+
+    def normalize_amount(self, money_obj):
+        normalizing_currency = "CAD"
+        if not isinstance(money_obj, Money):
+            raise Exception("Function expects Money object -- received " + money_obj.__class__.__name__)
+
+        if money_obj.currency == normalizing_currency:
+            return money_obj
+
+        rates = self.get_currency_code_rates(normalizing_currency)
+        return Money(
+            money_obj.amount * decimal.Decimal(rates.get(money_obj.currency.code)),
+            normalizing_currency
+        )
