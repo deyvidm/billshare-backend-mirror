@@ -18,6 +18,7 @@ from django.conf.urls import url
 from app.auth.views import LoginView, LogoutView, CreateUserView
 from app.currency.views import CurrencyCodesView, CurrencyView
 from app.group.views import GroupView, GroupTransactionsView
+from app.mail.views import MailGroupInviteView
 from app.transaction.views import TransactionView
 from app.user.views import (
     UserView,
@@ -45,6 +46,8 @@ urlpatterns = [
     url(r'^group/$', GroupView.as_view()),
     url(r'^group/(?P<group_id>\d+)/$', GroupView.as_view()),
     url(r'^group/(?P<group_id>\d+)/transactions/$', GroupTransactionsView.as_view()),
+
+    url(r'^mail/group/invite/$', MailGroupInviteView.as_view()),
 
     url(r'^transaction/$', TransactionView.as_view()),
     url(r'^transaction/(?P<transaction_id>\d+)/$', TransactionView.as_view()),

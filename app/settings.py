@@ -25,8 +25,7 @@ DJANGO_ENV_PROD = 'prod'
 DJANGO_ENV_DEV = 'dev'
 
 # Usable settings constant
-DJANGO_ENV_IS_PROD = False
-# DJANGO_ENV == DJANGO_ENV_PROD
+DJANGO_ENV_IS_PROD = DJANGO_ENV == DJANGO_ENV_PROD
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = environ['DJANGO_SECRET_KEY']
@@ -115,6 +114,11 @@ DATABASES = {
     }
 }
 
+EMAIL_USE_TLS = True
+EMAIL_HOST = environ['EMAIL_HOST']
+EMAIL_PORT = environ['EMAIL_PORT']
+EMAIL_HOST_USER = environ['EMAIL_HOST_USER']
+EMAIL_HOST_PASSWORD = environ['EMAIL_HOST_PASSWORD']
 
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators

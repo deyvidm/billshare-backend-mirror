@@ -1,8 +1,12 @@
-from django.http import JsonResponse
 from django.conf import settings
+from django.http import JsonResponse
+from django.shortcuts import redirect
 
 
 class ResponseService():
+
+    def billshare_redirect(self):
+        return redirect("https://billshare.io/")
 
     def json_decode_exception(self, response):
         return JsonResponse(
@@ -42,7 +46,7 @@ class ResponseService():
         })
 
     def __prod_sanitization(self, params):
-        if settings.DJANGO_ENV_IS_PROD:
+        if False:  # settings.DJANGO_ENV_IS_PROD:
             params['data'] = {}
 
         return JsonResponse(**params)
