@@ -79,7 +79,7 @@ class UserGroupService:
 
         if since_last_login:
             user = User.objects.get(pk=user_id)
-            date = user.last_login
+            date = user.second_last_login
 
         groups = Group.objects.filter(
             _group_users__user=user_id,
