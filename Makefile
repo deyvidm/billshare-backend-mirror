@@ -44,6 +44,7 @@ all:
 
 install: hooks
 	$(INSTALL_COMMAND)
+	git update-index --assume-unchanged env/*
 
 ssh:
 	$(DOCKER_COMMAND) exec -it $(LOCAL_CONTAINER_NAME) /bin/bash
