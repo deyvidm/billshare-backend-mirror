@@ -24,6 +24,26 @@ class TransactionService:
     def dec_sub(self, x, y):
         return self.to_dec(x) - self.to_dec(y)
 
+    def dec_multiply(self, x, y):
+        return self.to_dec(x) * self.to_dec(y)
+
+    def normalize_amount(self, money_obj):
+        normalizing_currency = "CAD"
+        fixer_currency_service = FixerCurrencyService()
+
+        if not isinstance(money_obj, Money):
+            raise Exception("Function expects Money object -- received " + money_obj.__class__.__name__)
+
+        if money_obj.currency == normalizing_currency:
+            return money_obj
+
+        rates = fixer_currency_service.get_currency_code_rates(money_obj.currency.code)
+
+        return Money(
+            self.dec_multiply(money_obj.amount, rates.get(normalizing_currency)),
+            normalizing_currency
+        )
+
     def equalize_transaction_line_items_list(self, transaction_line_item_queue, total):
         debt_total = reduce(lambda x, y: self.dec_add(x, y), [t['debt'] for t in transaction_line_item_queue])
         diff = self.dec_sub(debt_total, total)
@@ -205,7 +225,8 @@ class UserTransactionService:
         ).distinct()
 
     def get_summary(self, user_id, start_date=None, end_date=None):
-        fixer_currency_service = FixerCurrencyService()
+        transaction_service = TransactionService()
+
         if not end_date:
             end_date = timezone.now()
         if not start_date:
@@ -223,9 +244,9 @@ class UserTransactionService:
                 if line_item.debtor == user and line_item.creditor == user:
                     continue
                 if line_item.debtor == user:
-                    debtTotal += fixer_currency_service.normalize_amount(line_item.debt)
+                    debtTotal += transaction_service.normalize_amount(line_item.debt)
                 elif line_item.creditor == user:
-                    creditTotal += fixer_currency_service.normalize_amount(line_item.debt)
+                    creditTotal += transaction_service.normalize_amount(line_item.debt)
 
         if isinstance(debtTotal, Money):
             debtTotal = float(debtTotal.amount)
@@ -233,7 +254,7 @@ class UserTransactionService:
             creditTotal = float(creditTotal.amount)
 
         return {
-            "total transactions": len(transactions),
+            "total_transactions": len(transactions),
             "credit": creditTotal,
             "debt": debtTotal,
             "date_start": start_date,
