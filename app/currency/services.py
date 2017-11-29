@@ -18,6 +18,8 @@ class FixerCurrencyService:
 
     currency_service = CurrencyService()
 
+    currency_code_rates = None
+
     #
     # Service to call fixer.io to get foreign exchange rates
     #
@@ -34,6 +36,10 @@ class FixerCurrencyService:
             self.historical_date = historical_date
 
     def get_currency_code_rates(self, base_currency=None):
+
+        if self.currency_code_rates:
+            return self.currency_code_rates
+
         base_currency = base_currency or self.base_currency
 
         response = requests.get(self.fixer_url + self.historical_date + '?' + 'base=' + base_currency)
@@ -45,7 +51,8 @@ class FixerCurrencyService:
                 currency_codes[base_currency] = 1.0
                 accepted_currency_codes = self.currency_service.get_currency_codes()
 
-                return {currency_code: currency_codes[currency_code] for currency_code in accepted_currency_codes if currency_code in currency_codes}
+                self.currency_code_rates = {currency_code: currency_codes[currency_code] for currency_code in accepted_currency_codes if currency_code in currency_codes}
+                return self.currency_code_rates
 
         return None
 
