@@ -166,6 +166,7 @@ class TransactionService:
 
 
 class UserTransactionService:
+    transaction_service = TransactionService()
 
     def sum_debt_credit_from_line_items(self, user_id, line_items):
         debt_total = 0
@@ -174,20 +175,24 @@ class UserTransactionService:
         user = User.objects.get(pk=user_id)
         for line_item in line_items:
             if line_item.debtor == user:
-                debt_total += line_item.debt
+                debt_total += self.transaction_service.normalize_amount(line_item.debt)
             elif line_item.creditor == user:
-                credit_total += line_item.debt
+                credit_total += self.transaction_service.normalize_amount(line_item.debt)
 
         if isinstance(debt_total, Money):
-            debt_total = float(debt_total.amount)
+            debt_total = debt_total.amount
+
         if isinstance(credit_total, Money):
-            credit_total = float(credit_total.amount)
+            credit_total = credit_total.amount
+
+        debt_total = self.transaction_service.to_dec(float(debt_total))
+        credit_total = self.transaction_service.to_dec(float(credit_total))
 
         return [debt_total, credit_total]
 
     def resolve_balance_from_line_items(self, user_id, line_items):
         debt_total, credit_total = self.sum_debt_credit_from_line_items(user_id, line_items)
-        return credit_total - debt_total
+        return float(credit_total - debt_total)
 
     def get_transaction_line_items(self, user_id, group_id, resolved):
         debtor = Q(debtor=User.objects.get(pk=user_id))
@@ -225,7 +230,6 @@ class UserTransactionService:
         ).distinct()
 
     def get_summary(self, user_id, start_date=None, end_date=None):
-        transaction_service = TransactionService()
 
         if not end_date:
             end_date = timezone.now()
@@ -244,9 +248,9 @@ class UserTransactionService:
                 if line_item.debtor == user and line_item.creditor == user:
                     continue
                 if line_item.debtor == user:
-                    debtTotal += transaction_service.normalize_amount(line_item.debt)
+                    debtTotal += self.transaction_service.normalize_amount(line_item.debt)
                 elif line_item.creditor == user:
-                    creditTotal += transaction_service.normalize_amount(line_item.debt)
+                    creditTotal += self.transaction_service.normalize_amount(line_item.debt)
 
         if isinstance(debtTotal, Money):
             debtTotal = float(debtTotal.amount)
