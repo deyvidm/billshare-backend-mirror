@@ -24,6 +24,26 @@ class TransactionService:
     def dec_sub(self, x, y):
         return self.to_dec(x) - self.to_dec(y)
 
+    def dec_multiply(self, x, y):
+        return self.to_dec(x) * self.to_dec(y)
+
+    def normalize_amount(self, money_obj):
+        normalizing_currency = "CAD"
+        fixer_currency_service = FixerCurrencyService()
+
+        if not isinstance(money_obj, Money):
+            raise Exception("Function expects Money object -- received " + money_obj.__class__.__name__)
+
+        if money_obj.currency == normalizing_currency:
+            return money_obj
+
+        rates = fixer_currency_service.get_currency_code_rates(money_obj.currency.code)
+
+        return Money(
+            self.dec_multiply(money_obj.amount, rates.get(normalizing_currency)),
+            normalizing_currency
+        )
+
     def equalize_transaction_line_items_list(self, transaction_line_item_queue, total):
         debt_total = reduce(lambda x, y: self.dec_add(x, y), [t['debt'] for t in transaction_line_item_queue])
         diff = self.dec_sub(debt_total, total)
@@ -146,6 +166,7 @@ class TransactionService:
 
 
 class UserTransactionService:
+    transaction_service = TransactionService()
 
     def sum_debt_credit_from_line_items(self, user_id, line_items):
         debt_total = 0
@@ -154,20 +175,24 @@ class UserTransactionService:
         user = User.objects.get(pk=user_id)
         for line_item in line_items:
             if line_item.debtor == user:
-                debt_total += line_item.debt
+                debt_total += self.transaction_service.normalize_amount(line_item.debt)
             elif line_item.creditor == user:
-                credit_total += line_item.debt
+                credit_total += self.transaction_service.normalize_amount(line_item.debt)
 
         if isinstance(debt_total, Money):
-            debt_total = float(debt_total.amount)
+            debt_total = debt_total.amount
+
         if isinstance(credit_total, Money):
-            credit_total = float(credit_total.amount)
+            credit_total = credit_total.amount
+
+        debt_total = self.transaction_service.to_dec(float(debt_total))
+        credit_total = self.transaction_service.to_dec(float(credit_total))
 
         return [debt_total, credit_total]
 
     def resolve_balance_from_line_items(self, user_id, line_items):
         debt_total, credit_total = self.sum_debt_credit_from_line_items(user_id, line_items)
-        return credit_total - debt_total
+        return float(credit_total - debt_total)
 
     def get_transaction_line_items(self, user_id, group_id, resolved):
         debtor = Q(debtor=User.objects.get(pk=user_id))
@@ -205,7 +230,7 @@ class UserTransactionService:
         ).distinct()
 
     def get_summary(self, user_id, start_date=None, end_date=None):
-        fixer_currency_service = FixerCurrencyService()
+
         if not end_date:
             end_date = timezone.now()
         if not start_date:
@@ -223,9 +248,9 @@ class UserTransactionService:
                 if line_item.debtor == user and line_item.creditor == user:
                     continue
                 if line_item.debtor == user:
-                    debtTotal += fixer_currency_service.normalize_amount(line_item.debt)
+                    debtTotal += self.transaction_service.normalize_amount(line_item.debt)
                 elif line_item.creditor == user:
-                    creditTotal += fixer_currency_service.normalize_amount(line_item.debt)
+                    creditTotal += self.transaction_service.normalize_amount(line_item.debt)
 
         if isinstance(debtTotal, Money):
             debtTotal = float(debtTotal.amount)
@@ -233,7 +258,7 @@ class UserTransactionService:
             creditTotal = float(creditTotal.amount)
 
         return {
-            "total transactions": len(transactions),
+            "total_transactions": len(transactions),
             "credit": creditTotal,
             "debt": debtTotal,
             "date_start": start_date,
